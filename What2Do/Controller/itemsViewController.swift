@@ -12,6 +12,7 @@ class itemsViewController: UITableViewController {
 
     // variables
     var items : [Item] = []
+    var navBarColourAsHex : String?
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var fromCategory : Category?
     {
@@ -19,13 +20,23 @@ class itemsViewController: UITableViewController {
        {
            loadItems()
        }
-       
     }
-   
+    
      
     override func viewDidLoad() {
         
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        if let safeNavBarHex = navBarColourAsHex
+        {
+            guard let navBar = navigationController?.navigationBar else{fatalError("Navigation controller does not exist.")}
+            navBar.backgroundColor = UIColor(hex: safeNavBarHex)
+            title = fromCategory?.title
+            print(safeNavBarHex)
+        }
     }
     
     // MARK: - IB Actions
@@ -60,33 +71,59 @@ class itemsViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return items.count + 1
     }
 
     // MARK: - Tableview Delegate Methods
      override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell", for: indexPath)
-        cell.textLabel?.text = items[indexPath.row].name
-        if(items[indexPath.row].isDone == true)
+        if(indexPath.row < items.count)
         {
-            cell.accessoryType = .checkmark
+            cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            cell.textLabel?.text = items[indexPath.row].name
+            if(items[indexPath.row].isDone == true)
+            {
+                cell.accessoryType = .checkmark
+            }
+            else
+            {
+                cell.accessoryType = .none
+            }
+            cell.textLabel?.numberOfLines = 0
+        }
+        else
+        {
+            if let safeCategoryName = fromCategory?.title
+            {
+                print("Create reminder for \(safeCategoryName)")
+                cell.textLabel?.textColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
+                cell.textLabel?.text = "Create reminder for \(title!)"
+                cell.accessoryType = .disclosureIndicator
+            }
         }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cellToConfigure = tableView.cellForRow(at: indexPath)
-        if(cellToConfigure?.accessoryType == UITableViewCell.AccessoryType.none)
+        if(indexPath.row == items.count)
         {
-            cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.checkmark
-            items[indexPath.row].isDone = true
-            saveItems()
+            print("Create reminder for category button is being pressed.")
         }
         else
         {
-            cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.none
-            items[indexPath.row].isDone = false
-            saveItems()
+            if(cellToConfigure?.accessoryType == UITableViewCell.AccessoryType.none)
+            {
+                cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.checkmark
+                items[indexPath.row].isDone = true
+                saveItems()
+            }
+            else
+            {
+                cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.none
+                items[indexPath.row].isDone = false
+                saveItems()
+            }
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -122,7 +159,7 @@ class itemsViewController: UITableViewController {
     {
         if let safeCategory = fromCategory
         {
-            let sortDescriptor = NSSortDescriptor(key: "parentCategory.title", ascending: true)
+            let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
             fetchRequest.predicate = NSPredicate(format: "parentCategory.title MATCHES %@", safeCategory.title!)
             fetchRequest.sortDescriptors = [sortDescriptor]
             do

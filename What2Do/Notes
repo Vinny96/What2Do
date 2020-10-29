@@ -1,2 +1,9 @@
 First thing to do is to is to set up the Category view controller and get that to persist. Completed
-We need to implement the swipe functionality. 
+We need to implement the swipe functionality. Completed
+Colour functionality for category cells. Completed
+Colour funcationality for nav bar. Completed
+We need to create a date picker for the cells that have an expiry date. 
+Now we need to set the categories to have an expiry date and send a push notification.
+
+
+It is also best to set a small reminder 15 minutes before the alloted time as well. This is to let the user know that their event is coming up so they can start preparing for it. 

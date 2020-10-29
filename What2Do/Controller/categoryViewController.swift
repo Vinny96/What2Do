@@ -16,16 +16,23 @@ class categoryViewController: UITableViewController {
     var cellIndexPath : IndexPath?
     var initialCellIndexPath : IndexPath?
     let colorPicker  = UIColorPickerViewController()
-    var cellColor : UIColor?
     var cellColorAsHex : String?
+    
+    // beta variables
+    let datePicker = UIDatePicker()
+    // end of beta variables
     
     override func viewDidLoad() {
         //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        tableView.rowHeight = 50.0
-        
+        tableView.rowHeight = 60.0
         super.viewDidLoad()
         colorPicker.delegate = self
         loadCategories()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation bar could not be loaded.")}
+        navBar.backgroundColor = #colorLiteral(red: 0.9647058824, green: 0.9568627451, blue: 0.9019607843, alpha: 1)
     }
     
     // IB Actions
@@ -33,11 +40,12 @@ class categoryViewController: UITableViewController {
     {
         var textField = UITextField()
         let firstAlertController = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert)
+       
         let secondAlertController = UIAlertController(title: "Choose colour for cell.", message: "", preferredStyle: .alert)
-        let secondAlertAction = UIAlertAction(title: "Choose your colour", style: .default) { (secondAlertAction) in
+        let thirdAlertAction = UIAlertAction(title: "Choose your colour", style: .default) { (secondAlertAction) in
             self.selectColor()
         }
-        secondAlertController.addAction(secondAlertAction)
+        secondAlertController.addAction(thirdAlertAction)
         
         firstAlertController.addTextField { (alertTextField) in
             textField = alertTextField
@@ -52,7 +60,7 @@ class categoryViewController: UITableViewController {
                 self.saveCategories()
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
-                    self.present(secondAlertController, animated: true, completion: nil)
+                    self.present(secondAlertController, animated: true, completion: nil) // used to be third alert controller still need to present the third alert controller.
                 }
             }
         }
@@ -66,6 +74,7 @@ class categoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         cellIndexPath = indexPath
         performSegue(withIdentifier: "categoryToItems", sender: self)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -109,6 +118,7 @@ class categoryViewController: UITableViewController {
         if let safeCellIndexPath = cellIndexPath
         {
             destinationSegue.fromCategory = categories[safeCellIndexPath.row]
+            destinationSegue.navBarColourAsHex = categories[safeCellIndexPath.row].hexVal
         }
     }
     
@@ -134,6 +144,8 @@ class categoryViewController: UITableViewController {
     
     func loadCategories(fetchRequest : NSFetchRequest<Category> = Category.fetchRequest() )
     {
+        let sortDescriptor : NSSortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         do
         {
             categories = try context.fetch(fetchRequest)
@@ -155,8 +167,9 @@ extension categoryViewController : UIColorPickerViewControllerDelegate
     }
     
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
+        var cellColor : UIColor = UIColor()
         cellColor = viewController.selectedColor
-        cellColorAsHex = cellColor?.toHex()
+        cellColorAsHex = cellColor.toHex()
         if let safeIndexPath = initialCellIndexPath
         {
             categories[safeIndexPath.row].hexVal = cellColorAsHex
@@ -220,3 +233,4 @@ extension UIColor
     }
 }
 
+// so we need a total three alert controllers and three alert actions. So we have to ask the user if their reminder expires. If they answer no we take them straight to the colour picker. If they asnwer yes we then populate a date and time picker, store that date and time and we then proceed to display the colour picker. We also need to set push notifications for this. 
