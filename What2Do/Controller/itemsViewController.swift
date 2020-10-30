@@ -60,9 +60,19 @@ class itemsViewController: UITableViewController {
                 self.tableView.reloadData()
             }
         }
+        let firstAlertActionTwo = UIAlertAction(title: "Cancel", style: .cancel) { (firstAlertActionTwo) in
+            print("The alert in itemsViewController is now being dismissed.")
+        }
         firstAlertController.addAction(firstAlertAction)
+        firstAlertController.addAction(firstAlertActionTwo)
         present(firstAlertController, animated: true, completion: nil)
     }
+    
+    @IBAction func addReminder(_ sender: UIButton)
+    {
+        print("The add reminder button is now being pressed.")
+    }
+    
     
     // MARK: - Table view data source
 
@@ -71,59 +81,39 @@ class itemsViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count + 1
+        return items.count
     }
 
     // MARK: - Tableview Delegate Methods
      override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell", for: indexPath)
-        if(indexPath.row < items.count)
+        cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        cell.textLabel?.text = items[indexPath.row].name
+        if(items[indexPath.row].isDone == true)
         {
-            cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            cell.textLabel?.text = items[indexPath.row].name
-            if(items[indexPath.row].isDone == true)
-            {
-                cell.accessoryType = .checkmark
-            }
-            else
-            {
-                cell.accessoryType = .none
-            }
-            cell.textLabel?.numberOfLines = 0
+            cell.accessoryType = .checkmark
         }
         else
         {
-            if let safeCategoryName = fromCategory?.title
-            {
-                print("Create reminder for \(safeCategoryName)")
-                cell.textLabel?.textColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
-                cell.textLabel?.text = "Create reminder for \(title!)"
-                cell.accessoryType = .disclosureIndicator
-            }
+            cell.accessoryType = .none
         }
+        cell.textLabel?.numberOfLines = 0
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cellToConfigure = tableView.cellForRow(at: indexPath)
-        if(indexPath.row == items.count)
+        if(cellToConfigure?.accessoryType == UITableViewCell.AccessoryType.none)
         {
-            print("Create reminder for category button is being pressed.")
+            cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.checkmark
+            items[indexPath.row].isDone = true
+            saveItems()
         }
         else
         {
-            if(cellToConfigure?.accessoryType == UITableViewCell.AccessoryType.none)
-            {
-                cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.checkmark
-                items[indexPath.row].isDone = true
-                saveItems()
-            }
-            else
-            {
-                cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.none
-                items[indexPath.row].isDone = false
-                saveItems()
-            }
+            cellToConfigure?.accessoryType = UITableViewCell.AccessoryType.none
+            items[indexPath.row].isDone = false
+            saveItems()
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -174,3 +164,6 @@ class itemsViewController: UITableViewController {
         }
     }
 }
+
+// MARK: - UI Button Extension
+

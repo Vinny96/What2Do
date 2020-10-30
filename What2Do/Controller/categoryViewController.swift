@@ -23,7 +23,7 @@ class categoryViewController: UITableViewController {
     // end of beta variables
     
     override func viewDidLoad() {
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         tableView.rowHeight = 60.0
         super.viewDidLoad()
         colorPicker.delegate = self
@@ -42,10 +42,10 @@ class categoryViewController: UITableViewController {
         let firstAlertController = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert)
        
         let secondAlertController = UIAlertController(title: "Choose colour for cell.", message: "", preferredStyle: .alert)
-        let thirdAlertAction = UIAlertAction(title: "Choose your colour", style: .default) { (secondAlertAction) in
+        let secondAlertAction = UIAlertAction(title: "Choose your colour", style: .default) { (secondAlertAction) in
             self.selectColor()
         }
-        secondAlertController.addAction(thirdAlertAction)
+        secondAlertController.addAction(secondAlertAction)
         
         firstAlertController.addTextField { (alertTextField) in
             textField = alertTextField
@@ -64,7 +64,11 @@ class categoryViewController: UITableViewController {
                 }
             }
         }
+        let firstAlertActionTwo = UIAlertAction(title: "Cancel", style: .cancel, handler: { (firstAlertActionTwo) in
+            print("The alert is now being dismissed.")
+        })
         firstAlertController.addAction(firstAlertAction)
+        firstAlertController.addAction(firstAlertActionTwo)
         present(firstAlertController, animated: true, completion: nil)
         
     }

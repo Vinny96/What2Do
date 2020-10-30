@@ -17,6 +17,7 @@
 		2F96220F2545D74800864E78 /* What2DoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F96220E2545D74800864E78 /* What2DoTests.swift */; };
 		2F96221A2545D74800864E78 /* What2DoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F9622192545D74800864E78 /* What2DoUITests.swift */; };
 		2F9622352545DE7D00864E78 /* Notes in Resources */ = {isa = PBXBuildFile; fileRef = 2F9622342545DE7D00864E78 /* Notes */; };
+		2FE71C1F254B1A5F001235EB /* datePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE71C1E254B1A5F001235EB /* datePickerController.swift */; };
 		2FF63B582545F88E00A86025 /* itemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF63B572545F88E00A86025 /* itemsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,7 @@
 		2F9622192545D74800864E78 /* What2DoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = What2DoUITests.swift; sourceTree = "<group>"; };
 		2F96221B2545D74800864E78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2F9622342545DE7D00864E78 /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Notes; sourceTree = "<group>"; };
+		2FE71C1E254B1A5F001235EB /* datePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = datePickerController.swift; sourceTree = "<group>"; };
 		2FF63B572545F88E00A86025 /* itemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = itemsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,6 +159,7 @@
 			children = (
 				2F9621F82545D74700864E78 /* categoryViewController.swift */,
 				2FF63B572545F88E00A86025 /* itemsViewController.swift */,
+				2FE71C1E254B1A5F001235EB /* datePickerController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 				2F9621FF2545D74700864E78 /* What2Do.xcdatamodeld in Sources */,
 				2F9621F52545D74700864E78 /* AppDelegate.swift in Sources */,
 				2F9621F72545D74700864E78 /* SceneDelegate.swift in Sources */,
+				2FE71C1F254B1A5F001235EB /* datePickerController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
