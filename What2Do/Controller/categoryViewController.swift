@@ -14,7 +14,7 @@ class categoryViewController: UITableViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var categories : [Category] = []
     var cellIndexPath : IndexPath?
-    var initialCellIndexPath : IndexPath?
+    var initialCellIndexPath : IndexPath? // used for colour.
     let colorPicker  = UIColorPickerViewController()
     var cellColorAsHex : String?
     
@@ -32,7 +32,7 @@ class categoryViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         guard let navBar = navigationController?.navigationBar else {fatalError("Navigation bar could not be loaded.")}
-        navBar.backgroundColor = #colorLiteral(red: 0.9647058824, green: 0.9568627451, blue: 0.9019607843, alpha: 1)
+        navBar.backgroundColor = UIColor(named: "navBarColor")
     }
     
     // IB Actions
@@ -123,6 +123,10 @@ class categoryViewController: UITableViewController {
         {
             destinationSegue.fromCategory = categories[safeCellIndexPath.row]
             destinationSegue.navBarColourAsHex = categories[safeCellIndexPath.row].hexVal
+            //beta code
+            destinationSegue.categories = categories
+            destinationSegue.categoryIndexPathToPass = safeCellIndexPath
+            // end of beta code
         }
     }
     

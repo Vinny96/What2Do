@@ -2,17 +2,17 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Category" representedClassName=".Category" syncable="YES" codeGenerationType="class">
         <attribute name="hexVal" optional="YES" attributeType="String"/>
+        <attribute name="reminderDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="toItem" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Item" inverseName="parentCategory" inverseEntity="Item"/>
     </entity>
     <entity name="Item" representedClassName=".Item" syncable="YES" codeGenerationType="class">
-        <attribute name="doesExpire" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="parentCategory" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Category" inverseName="toItem" inverseEntity="Category"/>
     </entity>
     <elements>
-        <element name="Category" positionX="-63" positionY="-18" width="128" height="88"/>
-        <element name="Item" positionX="207.15234375" positionY="65.453125" width="128" height="103"/>
+        <element name="Category" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="Item" positionX="207.15234375" positionY="65.453125" width="128" height="88"/>
     </elements>
 </model>

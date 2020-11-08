@@ -12,6 +12,8 @@ class itemsViewController: UITableViewController {
 
     // variables
     var items : [Item] = []
+    var categories : [Category] = []
+    var categoryIndexPathToPass : IndexPath?
     var navBarColourAsHex : String?
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var fromCategory : Category?
@@ -68,11 +70,20 @@ class itemsViewController: UITableViewController {
         present(firstAlertController, animated: true, completion: nil)
     }
     
-    @IBAction func addReminder(_ sender: UIButton)
+    @IBAction func addReminder(_ sender: UIBarButtonItem)
     {
-        print("The add reminder button is now being pressed.")
+        if let safeCategoryTitle = fromCategory
+        {
+            let firstAlertController = UIAlertController(title: "Create Reminder", message: "Please choose a date and time for \(safeCategoryTitle.title ?? "no value selected.")", preferredStyle: .alert)
+            let firstAlertAction = UIAlertAction(title: "Choose date and time", style: .default) { (firstAlertAction) in
+                self.performSegue(withIdentifier: "toDatePicker", sender: self)
+            }
+            let secondAlertAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+            firstAlertController.addAction(firstAlertAction)
+            firstAlertController.addAction(secondAlertAction)
+            present(firstAlertController, animated: true, completion: nil)
+        }
     }
-    
     
     // MARK: - Table view data source
 
@@ -87,7 +98,7 @@ class itemsViewController: UITableViewController {
     // MARK: - Tableview Delegate Methods
      override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell", for: indexPath)
-        cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.text = items[indexPath.row].name
         if(items[indexPath.row].isDone == true)
         {
@@ -163,7 +174,15 @@ class itemsViewController: UITableViewController {
             }
         }
     }
+    
+    //MARK: - Functions
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        let destinationVC = segue.destination as! datePickerController
+        destinationVC.categoriesArray = categories
+        destinationVC.categoryIndexPath = categoryIndexPathToPass
+    }
 }
 
-// MARK: - UI Button Extension
+
 

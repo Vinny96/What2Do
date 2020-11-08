@@ -4,6 +4,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -70,6 +71,7 @@
                             <outlet property="delegate" destination="j5x-Em-8ml" id="61y-CJ-5rt"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="vWN-E4-hf8">
                         <rightBarButtonItems>
                             <barButtonItem title="Add new item" image="plus" catalog="system" id="JAD-Lz-CSu">
@@ -78,23 +80,96 @@
                                     <action selector="addItem:" destination="j5x-Em-8ml" id="y6V-EQ-x3O"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="Set Reminder" id="5wg-ZV-JLb">
-                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="9dc-ui-HkD">
-                                    <rect key="frame" x="314.33333333333331" y="11" width="19" height="22"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <state key="normal" image="bell.fill" catalog="system"/>
-                                    <connections>
-                                        <action selector="addReminder:" destination="j5x-Em-8ml" eventType="touchUpInside" id="VCq-K8-C8c"/>
-                                    </connections>
-                                </button>
+                            <barButtonItem image="bell.fill" catalog="system" id="NbZ-kY-rZg" userLabel="addReminder">
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="addReminder:" destination="j5x-Em-8ml" id="R4J-7S-wJN"/>
+                                </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <segue destination="zna-E6-UhI" kind="presentation" identifier="toDatePicker" id="Hw9-uN-YZA"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bwl-kW-JSz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="872" y="125"/>
+        </scene>
+        <!--Date Picker Controller-->
+        <scene sceneID="aYF-UJ-LWj">
+            <objects>
+                <viewController id="zna-E6-UhI" customClass="datePickerController" customModule="What2Do" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="zvu-nw-K6p">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="790"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="3Ix-3W-jpN" userLabel="reminderView">
+                                <rect key="frame" x="35" y="80" width="320" height="211"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current Reminder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1fo-yR-uaf">
+                                        <rect key="frame" x="51.666666666666671" y="0.0" width="216.66666666666663" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="8Uw-pJ-cz5"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Copperplate" family="Copperplate" pointSize="23"/>
+                                        <nil key="textColor"/>
+                                        <color key="highlightedColor" name="textColor"/>
+                                    </label>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="49w-ur-aWY">
+                                        <rect key="frame" x="0.0" y="58" width="320" height="75"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="75" id="xJ0-8C-sFo"/>
+                                        </constraints>
+                                    </datePicker>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FU1-TZ-vkj" userLabel="saveReminder">
+                                        <rect key="frame" x="65" y="141" width="190" height="70"/>
+                                        <color key="backgroundColor" name="saveReminderColour"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="190" id="FqH-tp-8MY"/>
+                                            <constraint firstAttribute="height" constant="70" id="vDk-jd-NyD"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Copperplate" family="Copperplate" pointSize="20"/>
+                                        <state key="normal" title="Save Reminder">
+                                            <color key="titleColor" name="saveReminderText"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="saveReminderPressed:" destination="zna-E6-UhI" eventType="touchUpInside" id="gBv-qj-ndB"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hmn-kH-4v5" userLabel="emptyView">
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="72"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="72" id="prY-UN-HQX"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="dHm-xy-3IN"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="3Ix-3W-jpN" firstAttribute="centerX" secondItem="zvu-nw-K6p" secondAttribute="centerX" id="8AB-4Y-NWq"/>
+                            <constraint firstItem="Hmn-kH-4v5" firstAttribute="top" secondItem="dHm-xy-3IN" secondAttribute="top" id="9aG-jT-nNe"/>
+                            <constraint firstItem="Hmn-kH-4v5" firstAttribute="top" secondItem="dHm-xy-3IN" secondAttribute="top" id="Ma8-eq-gjz"/>
+                            <constraint firstItem="Hmn-kH-4v5" firstAttribute="leading" secondItem="dHm-xy-3IN" secondAttribute="leading" id="UJG-Kv-uzF"/>
+                            <constraint firstItem="dHm-xy-3IN" firstAttribute="trailing" secondItem="3Ix-3W-jpN" secondAttribute="trailing" constant="35" id="nFF-ao-f4Q"/>
+                            <constraint firstItem="3Ix-3W-jpN" firstAttribute="leading" secondItem="dHm-xy-3IN" secondAttribute="leading" constant="35" id="okj-XL-F1A"/>
+                            <constraint firstItem="3Ix-3W-jpN" firstAttribute="top" secondItem="Hmn-kH-4v5" secondAttribute="bottom" constant="8" symbolic="YES" id="rjx-Fg-ies"/>
+                            <constraint firstItem="dHm-xy-3IN" firstAttribute="trailing" secondItem="Hmn-kH-4v5" secondAttribute="trailing" id="sLY-NA-OJ3"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="jSy-Ta-rGO"/>
+                    <connections>
+                        <outlet property="reminderPicker" destination="49w-ur-aWY" id="e9N-jz-Q7k"/>
+                        <outlet property="saveReminderButton" destination="FU1-TZ-vkj" id="x4b-oo-4mE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tl1-yc-LFV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1844.6153846153845" y="124.40758293838861"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="5z8-Uz-EcS">
@@ -120,6 +195,15 @@
         <image name="plus" catalog="system" width="128" height="113"/>
         <namedColor name="NavBarColour">
             <color red="0.9100000262260437" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="saveReminderColour">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="saveReminderText">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="textColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
