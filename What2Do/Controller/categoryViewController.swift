@@ -17,10 +17,8 @@ class categoryViewController: UITableViewController {
     var initialCellIndexPath : IndexPath? // used for colour.
     let colorPicker  = UIColorPickerViewController()
     var cellColorAsHex : String?
-    
-    // beta variables
     let datePicker = UIDatePicker()
-    // end of beta variables
+    
     
     override func viewDidLoad() {
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
@@ -73,6 +71,10 @@ class categoryViewController: UITableViewController {
         
     }
     
+    @IBAction func viewCompletedCategories(_ sender: Any)
+    {
+        performSegue(withIdentifier: "toCompletedCategories", sender: self)
+    }
     
     // MARK: - Tableview Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -88,6 +90,11 @@ class categoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete
         {
+            // start of beta code
+            let completedCategory = CompletedCategory(context: context)
+            completedCategory.title = categories[indexPath.row].title
+            saveCompletedCategories()
+            // end of beta code
             context.delete(categories[indexPath.row])
             categories.remove(at: indexPath.row)
             saveCategories()
@@ -118,17 +125,25 @@ class categoryViewController: UITableViewController {
     
     // MARK: - Functions
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destinationSegue : itemsViewController = segue.destination as! itemsViewController
-        if let safeCellIndexPath = cellIndexPath
+        if(segue.identifier == "categoryToItems")
         {
-            destinationSegue.fromCategory = categories[safeCellIndexPath.row]
-            destinationSegue.navBarColourAsHex = categories[safeCellIndexPath.row].hexVal
-            //beta code
-            destinationSegue.categories = categories
-            destinationSegue.categoryIndexPathToPass = safeCellIndexPath
-            // end of beta code
+            let destinationSegue : itemsViewController = segue.destination as! itemsViewController
+            if let safeCellIndexPath = cellIndexPath
+            {
+                destinationSegue.fromCategory = categories[safeCellIndexPath.row]
+                destinationSegue.navBarColourAsHex = categories[safeCellIndexPath.row].hexVal
+                destinationSegue.categories = categories
+                destinationSegue.categoryIndexPathToPass = safeCellIndexPath
+                
+            }
+        }
+        if(segue.identifier == "toCompleteCategories")
+        {
+            let _ : completedCategoriesController = segue.destination as! completedCategoriesController
+            print("Going into complete categories.")
         }
     }
+    
     
     func selectColor()
     {
@@ -147,6 +162,18 @@ class categoryViewController: UITableViewController {
         {
             print(error.localizedDescription)
             print("Error in saving the categories.")
+        }
+    }
+    
+    func saveCompletedCategories()
+    {
+        do
+        {
+            try context.save()
+        }catch
+        {
+            print(error.localizedDescription)
+            print("There was an error in saving the CompletedCategory object(s) to the context.")
         }
     }
     

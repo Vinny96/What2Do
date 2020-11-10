@@ -33,20 +33,65 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="What2Do" id="mEi-yj-oTP">
-                        <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="pGY-u5-fjT">
-                            <color key="tintColor" systemColor="systemBlueColor"/>
-                            <connections>
-                                <action selector="addCategory:" destination="U5a-S0-Zzu" id="Wv1-AX-DDi"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem image="plus" catalog="system" id="pGY-u5-fjT">
+                                <color key="tintColor" systemColor="systemBlueColor"/>
+                                <connections>
+                                    <action selector="addCategory:" destination="U5a-S0-Zzu" id="Wv1-AX-DDi"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="checkmark.rectangle.fill" catalog="system" id="Q3H-dD-3Fb">
+                                <color key="tintColor" systemColor="systemBlueColor"/>
+                                <connections>
+                                    <action selector="viewCompletedCategories:" destination="U5a-S0-Zzu" id="H52-4G-SXn"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <segue destination="j5x-Em-8ml" kind="show" identifier="categoryToItems" id="uFj-s2-x4G"/>
+                        <segue destination="BCd-Bw-VSi" kind="show" identifier="toCompletedCategories" id="MpZ-1E-FCz"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7b0-zw-fJn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-48" y="125"/>
+        </scene>
+        <!--Completed Categories Controller-->
+        <scene sceneID="TxK-js-27e">
+            <objects>
+                <tableViewController id="BCd-Bw-VSi" customClass="completedCategoriesController" customModule="What2Do" customModuleProvider="target" colorLabel="IBBuiltInLabel-Yellow" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="8jU-tL-Nmo">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="completedCell" id="Kwr-Gy-44Z">
+                                <rect key="frame" x="0.0" y="28" width="390" height="43.666667938232422"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Kwr-Gy-44Z" id="z0i-oH-sPy">
+                                    <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="BCd-Bw-VSi" id="tuw-3X-xrF"/>
+                            <outlet property="delegate" destination="BCd-Bw-VSi" id="ucC-t0-T2T"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="jaq-3c-OaQ">
+                        <barButtonItem key="rightBarButtonItem" image="trash.fill" catalog="system" id="aLc-iu-IpE" userLabel="deleteAllCompletedCat">
+                            <color key="tintColor" name="trashIconColor"/>
+                            <connections>
+                                <action selector="trashPressed:" destination="BCd-Bw-VSi" id="JeR-iC-6sy"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DCp-jf-Fio" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1029" y="124"/>
         </scene>
         <!--Items View Controller-->
         <scene sceneID="lpD-Ty-j1g">
@@ -86,6 +131,12 @@
                                     <action selector="addReminder:" destination="j5x-Em-8ml" id="R4J-7S-wJN"/>
                                 </connections>
                             </barButtonItem>
+                            <barButtonItem title="Item" image="eye" catalog="system" id="Hse-Ry-OmN">
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="viewReminder:" destination="j5x-Em-8ml" id="k3E-H7-C1I"/>
+                                </connections>
+                            </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
@@ -95,7 +146,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bwl-kW-JSz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="872" y="125"/>
+            <point key="canvasLocation" x="749" y="861"/>
         </scene>
         <!--Date Picker Controller-->
         <scene sceneID="aYF-UJ-LWj">
@@ -169,7 +220,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tl1-yc-LFV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1844.6153846153845" y="124.40758293838861"/>
+            <point key="canvasLocation" x="1822" y="861"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="5z8-Uz-EcS">
@@ -180,6 +231,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="barTintColor" name="NavBarColour"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
+                        </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <fontDescription key="fontDescription" name="Futura-Bold" family="Futura" pointSize="32"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="U5a-S0-Zzu" kind="relationship" relationship="rootViewController" id="zLn-Xa-p0F"/>
@@ -192,7 +249,10 @@
     </scenes>
     <resources>
         <image name="bell.fill" catalog="system" width="128" height="124"/>
+        <image name="checkmark.rectangle.fill" catalog="system" width="128" height="93"/>
+        <image name="eye" catalog="system" width="128" height="81"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="trash.fill" catalog="system" width="121" height="128"/>
         <namedColor name="NavBarColour">
             <color red="0.9100000262260437" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
@@ -204,6 +264,9 @@
         </namedColor>
         <namedColor name="textColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="trashIconColor">
+            <color red="0.0" green="0.4779999852180481" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

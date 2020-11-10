@@ -6,6 +6,9 @@
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="toItem" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Item" inverseName="parentCategory" inverseEntity="Item"/>
     </entity>
+    <entity name="CompletedCategory" representedClassName="CompletedCategory" syncable="YES" codeGenerationType="class">
+        <attribute name="title" attributeType="String"/>
+    </entity>
     <entity name="Item" representedClassName=".Item" syncable="YES" codeGenerationType="class">
         <attribute name="isDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -13,6 +16,7 @@
     </entity>
     <elements>
         <element name="Category" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="CompletedCategory" positionX="72" positionY="54" width="128" height="58"/>
         <element name="Item" positionX="207.15234375" positionY="65.453125" width="128" height="88"/>
     </elements>
 </model>

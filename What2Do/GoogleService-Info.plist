@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>358339590781-7d4l82l93s203te2lohsi34lhnqi7s4n.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.358339590781-7d4l82l93s203te2lohsi34lhnqi7s4n</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB3Jt4bPW0oy3WLgLPHBYI_uqhnVlD9Cn0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>358339590781</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.What2DoProject.What2Do</string>
+	<key>PROJECT_ID</key>
+	<string>what2do-81b2d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>what2do-81b2d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:358339590781:ios:a75736f331fd93d8390f14</string>
+	<key>DATABASE_URL</key>
+	<string>https://what2do-81b2d.firebaseio.com</string>
+</dict>
+</plist>

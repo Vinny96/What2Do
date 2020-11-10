@@ -63,7 +63,6 @@ class itemsViewController: UITableViewController {
             }
         }
         let firstAlertActionTwo = UIAlertAction(title: "Cancel", style: .cancel) { (firstAlertActionTwo) in
-            print("The alert in itemsViewController is now being dismissed.")
         }
         firstAlertController.addAction(firstAlertAction)
         firstAlertController.addAction(firstAlertActionTwo)
@@ -83,6 +82,32 @@ class itemsViewController: UITableViewController {
             firstAlertController.addAction(secondAlertAction)
             present(firstAlertController, animated: true, completion: nil)
         }
+    }
+    
+    @IBAction func viewReminder(_ sender: UIBarButtonItem)
+    {
+        let reminderSet : String?
+        let reminderNotSet : String?
+        if let safeCategory = fromCategory
+        {
+            if let safeDate = safeCategory.reminderDate
+            {
+                reminderSet = ("Your current reminder is set for \(safeDate.localizedDescription)")
+                let firstAlertController = UIAlertController(title: "View Reminder", message: reminderSet, preferredStyle: .alert)
+                let firstAlertAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                firstAlertController.addAction(firstAlertAction)
+                present(firstAlertController, animated: true, completion: nil)
+            }
+            else
+            {
+                reminderNotSet = "There is no reminder that is currently set. Please press the bell button to create a reminder then press save reminder to save it."
+                let firstAlertController = UIAlertController(title: "No Reminder Present", message: reminderNotSet, preferredStyle: .alert)
+                let firstAlertAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                firstAlertController.addAction(firstAlertAction)
+                present(firstAlertController, animated: true, completion: nil)
+            }
+        }
+        
     }
     
     // MARK: - Table view data source

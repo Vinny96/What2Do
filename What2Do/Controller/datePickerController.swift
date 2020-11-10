@@ -13,10 +13,9 @@ class datePickerController : UIViewController
 {
     // variables
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    // beta code
     var categoriesArray : [Category] = []
     var categoryIndexPath : IndexPath?
-    // end of beta code
+
     
     // IB Outlets
     @IBOutlet weak var reminderPicker: UIDatePicker!
@@ -29,9 +28,9 @@ class datePickerController : UIViewController
     {
         super.viewDidLoad()
         reminderPicker.datePickerMode = .dateAndTime
-        //
         reminderPicker.preferredDatePickerStyle = .automatic
         saveReminderButton.layer.cornerRadius = 15.0
+        initializeDatePicker()
         
     }
     
@@ -40,6 +39,7 @@ class datePickerController : UIViewController
     @IBAction func saveReminderPressed(_ sender: Any)
     {
         setDateForCategory()
+        dismiss(animated: true, completion: nil)
     }
     
     
@@ -58,6 +58,25 @@ class datePickerController : UIViewController
         }
     }
     
+    func initializeDatePicker()
+    {
+        var dateToSet = Date()
+        if let safeIndexPath = categoryIndexPath
+        {
+            if let safeDate = categoriesArray[safeIndexPath.row].reminderDate
+            {
+                dateToSet = safeDate
+                reminderPicker.date = dateToSet
+            }
+        }
+    }
+    
+    
+    func sendReminderToCloud()
+    {
+        
+    }
+    
     //MARK: - CRUD Functionality
     func saveContext()
     {
@@ -70,7 +89,6 @@ class datePickerController : UIViewController
             print(error.localizedDescription)
         }
     }
-    
     
     
 }
