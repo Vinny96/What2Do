@@ -31,15 +31,17 @@ class completedCategoriesController: UITableViewController {
     //MARK: - IB Actions
     @IBAction func trashPressed(_ sender: UIBarButtonItem)
     {
+        print(self.completedCategories.count)
         let firstAlertController = UIAlertController(title: "Delete all completed tasks.", message: "This action will delete all completed tasks and this action cannot be reversed.", preferredStyle: .alert)
         let firstAlertAction = UIAlertAction(title: "Delete", style: .destructive) { (firstAlertAction) in
             while(self.completedCategories.count != 0)
             {
-                let completedCatObjReturned = self.completedCategories.removeLast()
+                let completedCatObjToDel = self.completedCategories.removeLast()
+                self.context.delete(completedCatObjToDel)
+                self.saveCompletedCategories()
                 self.tableView.reloadData()
-                self.context.delete(completedCatObjReturned)
-                //self.saveCompletedCategories()
             }
+            self.navigationController?.popViewController(animated: true)
         }
         let secondAlertAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         firstAlertController.addAction(firstAlertAction)
