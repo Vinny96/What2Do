@@ -2,9 +2,13 @@ First thing to do is to is to set up the Category view controller and get that t
 We need to implement the swipe functionality. Completed
 Colour functionality for category cells. Completed
 Colour funcationality for nav bar. Completed
-We need to create a date picker for the cells that have an expiry date. 
-Now we need to set the categories to have an expiry date and send a push notification.
+We need to create a date picker for the cells that have an expiry date.  COMPLETED
+Now we need to set the categories to have an expiry date and send a push notification.We need to write code that will create a scheduled notification from firebase.  HALF DONE
 
 
 It is also best to set a small reminder 15 minutes before the alloted time as well. This is to let the user know that their event is coming up so they can start preparing for it. 
-Figure out a way to link it to calendar. 
+Figure out a way to link it to calendar.
+
+One thing that we can do is for first time users of the app we can have a little tutorial that will display. How we can check if they are first time users is we can have a has launched option and persist that. If that number is below 1 as it will be for new users we show the tutoria. Once we have shown the tutorial we can increment that number to two so the tutorial will not trigger. 
+
+In order to schedule the push notification for the reminder it seems that cloud functions are the key to getting this done. 

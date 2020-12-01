@@ -26,6 +26,8 @@ class categoryViewController: UITableViewController {
         super.viewDidLoad()
         colorPicker.delegate = self
         loadCategories()
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = backBarButtonItem
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,7 +39,7 @@ class categoryViewController: UITableViewController {
     @IBAction func addCategory(_ sender: UIBarButtonItem)
     {
         var textField = UITextField()
-        let firstAlertController = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert)
+        let firstAlertController = UIAlertController(title: "Add new task", message: "", preferredStyle: .alert)
        
         let secondAlertController = UIAlertController(title: "Choose colour for cell.", message: "", preferredStyle: .alert)
         let secondAlertAction = UIAlertAction(title: "Choose your colour", style: .default) { (secondAlertAction) in
@@ -90,11 +92,9 @@ class categoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete
         {
-            // start of beta code
             let completedCategory = CompletedCategory(context: context)
             completedCategory.title = categories[indexPath.row].title
             saveCompletedCategories()
-            // end of beta code
             context.delete(categories[indexPath.row])
             categories.remove(at: indexPath.row)
             saveCategories()
@@ -114,6 +114,7 @@ class categoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
         cell.textLabel?.text = categories[indexPath.row].title
+        cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         initialCellIndexPath = indexPath
         if let safeRgb = categories[indexPath.row].hexVal
         {

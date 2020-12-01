@@ -26,6 +26,7 @@ class completedCategoriesController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
     }
     
     //MARK: - IB Actions
@@ -70,6 +71,7 @@ class completedCategoriesController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "completedCell", for: indexPath)
         cell.textLabel?.text = completedCategories[indexPath.row].title
+        cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         return cell
     }
     

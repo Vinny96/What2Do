@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+
 @available(iOS 14.0, *)
 class datePickerController : UIViewController
 {
@@ -15,6 +16,8 @@ class datePickerController : UIViewController
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var categoriesArray : [Category] = []
     var categoryIndexPath : IndexPath?
+    
+
 
     
     // IB Outlets
@@ -54,6 +57,7 @@ class datePickerController : UIViewController
             let categoryToModify = categoriesArray[safeIndexPath.row]
             let date = reminderPicker.date
             categoryToModify.reminderDate = date
+            // this is where we need to set the notification
             saveContext()
         }
     }

@@ -24,6 +24,8 @@ class itemsViewController: UITableViewController {
        }
     }
     
+    
+    
      
     override func viewDidLoad() {
         
@@ -37,7 +39,7 @@ class itemsViewController: UITableViewController {
             guard let navBar = navigationController?.navigationBar else{fatalError("Navigation controller does not exist.")}
             navBar.backgroundColor = UIColor(hex: safeNavBarHex)
             title = fromCategory?.title
-            print(safeNavBarHex)
+
         }
     }
     
@@ -100,7 +102,7 @@ class itemsViewController: UITableViewController {
             }
             else
             {
-                reminderNotSet = "There is no reminder that is currently set. Please press the bell button to create a reminder then press save reminder to save it."
+                reminderNotSet = "There is no reminder that is currently set. Please press the bell button to create a reminder."
                 let firstAlertController = UIAlertController(title: "No Reminder Present", message: reminderNotSet, preferredStyle: .alert)
                 let firstAlertAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
                 firstAlertController.addAction(firstAlertAction)
@@ -124,6 +126,7 @@ class itemsViewController: UITableViewController {
      override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell", for: indexPath)
         cell.textLabel?.textColor = UIColor(named: "textColor")
+        cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         cell.textLabel?.text = items[indexPath.row].name
         if(items[indexPath.row].isDone == true)
         {
