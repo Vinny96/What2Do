@@ -14,15 +14,28 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // variables
+    let center = UNUserNotificationCenter.current()
+    
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        if #available(iOS 14.0, *)
-        {
-            let authOptions : UNAuthorizationOptions = [.alert,.badge,.sound]
-            UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (_, _) in}
+        center.delegate = self
+        center.requestAuthorization(options: [.alert,.sound,.badge]) { (grantedAccess, error) in
+            if(grantedAccess == false)
+            {
+                print("The user has not granted permission for notifications.")
+            }
+            
         }
-        application.registerForRemoteNotifications()
+        // beta code
+        if(application.applicationState == .inactive)
+        {
+            print("This line should be running if the app launched when it wasn't in foreground or background.")
+        }
         
+        
+        
+        // end of beta code
         return true
     }
 
@@ -38,8 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
        
     }
     
-   
-
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {
@@ -89,5 +100,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
 }
-
+extension AppDelegate : UNUserNotificationCenterDelegate
+{
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner,.sound])
+        print("The notifications should have appeared by now.")
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        if response.actionIdentifier == "showTask"
+        {
+            // beta code
+            // we need to  create a function in categoryVC which will take us to the itemsViewController
+            let categoryName = response.notification.request.identifier
+            print("The category name is the following: \(categoryName)")
+            let storyBoard = UIStoryboard.init(name: "Main", bundle: Bundle.main)
+            let categoryVC = storyBoard.instantiateViewController(identifier: "categoryViewControllerID") as categoryViewController
+            categoryVC.takeToItemsVCFromLocalNotif(categoryNameAsString: categoryName, storyBoardToUse: storyBoard)
+            //end of beta code 
+        }
+        completionHandler()
+    }
+}
 

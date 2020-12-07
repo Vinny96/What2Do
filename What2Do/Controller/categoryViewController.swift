@@ -7,6 +7,8 @@
 
 import UIKit
 import CoreData
+import UserNotifications
+
 
 class categoryViewController: UITableViewController {
 
@@ -20,7 +22,9 @@ class categoryViewController: UITableViewController {
     let datePicker = UIDatePicker()
     
     
+    
     override func viewDidLoad() {
+       
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         tableView.rowHeight = 60.0
         super.viewDidLoad()
@@ -50,8 +54,9 @@ class categoryViewController: UITableViewController {
         firstAlertController.addTextField { (alertTextField) in
             textField = alertTextField
             textField.placeholder = "Enter new name here."
+            textField.autocorrectionType = .yes // beta code
         }
-        let firstAlertAction = UIAlertAction(title: "Enter new category", style: .default) { (firstAlertAction) in
+        let firstAlertAction = UIAlertAction(title: "Enter new task", style: .default) { (firstAlertAction) in
             if(textField.text != "")
             {
                 let categoryToAdd = Category(context: self.context)
@@ -93,6 +98,10 @@ class categoryViewController: UITableViewController {
         if editingStyle == .delete
         {
             let completedCategory = CompletedCategory(context: context)
+            // beta code
+            let notificationCenter = (UIApplication.shared.delegate as! AppDelegate).center
+            notificationCenter.removePendingNotificationRequests(withIdentifiers: [categories[indexPath.row].title!])
+            // end of beta code
             completedCategory.title = categories[indexPath.row].title
             saveCompletedCategories()
             context.delete(categories[indexPath.row])
@@ -113,6 +122,7 @@ class categoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
+        print(indexPath)
         cell.textLabel?.text = categories[indexPath.row].title
         cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         initialCellIndexPath = indexPath
@@ -152,6 +162,45 @@ class categoryViewController: UITableViewController {
         present(colorPicker, animated: true, completion: nil)
     }
     
+    // beta code that will be called from the app deleagte UNNotificationCenter delegate. This method works when app is in background or foreground.
+    func takeToItemsVCFromLocalNotif(categoryNameAsString name : String, storyBoardToUse storyBoard : UIStoryboard)
+    {
+        // we need to run a search operation on the category array to find out what name the index is at. Will have O(N) run time
+        let indexReturned = getIndexOfCategoryName(categoryNameToFind: name)
+        // now we need to prepare the itemsViewController to be popped as the main VC
+        let itemsVc = storyboard?.instantiateViewController(withIdentifier: "itemsViewControllerID") as! itemsViewController
+        let indexPathToUse : IndexPath = [0,indexReturned]
+        print(indexPathToUse)
+        itemsVc.categoryIndexPathToPass = indexPathToUse
+        loadCategories()
+        itemsVc.categories = categories
+        // getting an error as there are not objects in the categoryArray we have to load them in from coreData
+        itemsVc.navBarColourAsHex = categories[indexPathToUse.row].hexVal // getting an index out of range error
+        itemsVc.fromCategory = categories[indexPathToUse.row]
+        let navController = UIApplication.shared.windows[0].rootViewController as! UINavigationController
+        navController.pushViewController(itemsVc, animated: true)
+    }
+    
+    func getIndexOfCategoryName(categoryNameToFind : String) -> Int
+    {
+        var index : Int = 0
+        loadCategories()
+        for category in categories
+        {
+            if(category.title == categoryNameToFind)
+            {
+                return index
+            }
+            else
+            {
+                index += 1
+            }
+        }
+        print("\(categories[index])")
+        print("The index of the category is at \(index)")
+        return index
+    }
+    // end of beta code
     
     // MARK: - CRUD Implementation
     func saveCategories()
@@ -269,4 +318,5 @@ extension UIColor
     }
 }
 
-// so we need a total three alert controllers and three alert actions. So we have to ask the user if their reminder expires. If they answer no we take them straight to the colour picker. If they asnwer yes we then populate a date and time picker, store that date and time and we then proceed to display the colour picker. We also need to set push notifications for this. 
+
+

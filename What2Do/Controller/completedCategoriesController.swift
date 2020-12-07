@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 
+
 class completedCategoriesController: UITableViewController {
 
     // variables
@@ -111,3 +112,4 @@ class completedCategoriesController: UITableViewController {
     }
 
 }
+

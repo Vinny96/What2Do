@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 
+
 class itemsViewController: UITableViewController {
 
     // variables
@@ -47,12 +48,13 @@ class itemsViewController: UITableViewController {
     @IBAction func addItem(_ sender: UIBarButtonItem)
     {
         var textField = UITextField()
-        let firstAlertController = UIAlertController(title: "Add Item", message: "", preferredStyle: .alert)
+        let firstAlertController = UIAlertController(title: "Add sub task", message: "", preferredStyle: .alert)
         firstAlertController.addTextField { (alertTextField) in
             textField = alertTextField
-            textField.placeholder = "Enter item name here."
+            textField.autocorrectionType = .yes
+            textField.placeholder = "Enter sub task name here"
         }
-        let firstAlertAction = UIAlertAction(title: "Add new item", style: .default) { (firstAlertAction) in
+        let firstAlertAction = UIAlertAction(title: "Add new sub task", style: .default) { (firstAlertAction) in
             if(textField.text != "")
             {
                 let itemToAdd = Item(context: self.context)
@@ -211,6 +213,5 @@ class itemsViewController: UITableViewController {
         destinationVC.categoryIndexPath = categoryIndexPathToPass
     }
 }
-
 
 

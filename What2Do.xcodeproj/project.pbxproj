@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -96,7 +96,6 @@
 				2F96220D2545D74800864E78 /* What2DoTests */,
 				2F9622182545D74800864E78 /* What2DoUITests */,
 				2F9621F22545D74700864E78 /* Products */,
-				D3FA1BD81B4A2D1E206C5D85 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -171,13 +170,6 @@
 				2FA32E9725599B1A00FDFFB2 /* completedCategoriesController.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		D3FA1BD81B4A2D1E206C5D85 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -502,7 +494,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.What2DoProject.What2Do;
+				MARKETING_VERSION = 1.03;
+				PRODUCT_BUNDLE_IDENTIFIER = com.What2Do.Vinny;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -522,7 +515,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.What2DoProject.What2Do;
+				MARKETING_VERSION = 1.03;
+				PRODUCT_BUNDLE_IDENTIFIER = com.What2Do.Vinny;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -7,6 +7,8 @@
 
 import Foundation
 import UIKit
+import UserNotifications
+
 
 
 @available(iOS 14.0, *)
@@ -14,6 +16,7 @@ class datePickerController : UIViewController
 {
     // variables
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    let notificationCenter = (UIApplication.shared.delegate as! AppDelegate).center
     var categoriesArray : [Category] = []
     var categoryIndexPath : IndexPath?
     
@@ -30,6 +33,7 @@ class datePickerController : UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        notificationCenter.delegate = (UIApplication.shared.delegate as! AppDelegate)
         reminderPicker.datePickerMode = .dateAndTime
         reminderPicker.preferredDatePickerStyle = .automatic
         saveReminderButton.layer.cornerRadius = 15.0
@@ -57,8 +61,43 @@ class datePickerController : UIViewController
             let categoryToModify = categoriesArray[safeIndexPath.row]
             let date = reminderPicker.date
             categoryToModify.reminderDate = date
-            // this is where we need to set the notification
+            scheduleNotification(categoryToModify: categoryToModify, _dateToSchedule: date)
             saveContext()
+        }
+    }
+    
+    func scheduleNotification(categoryToModify : Category, _dateToSchedule date : Date)
+    {
+        let content = UNMutableNotificationContent()
+        content.title = ("\(categoryToModify.title!)")
+        content.body = ("Its time to start on \(categoryToModify.title!)")
+        content.sound = UNNotificationSound.default
+        content.categoryIdentifier = "reminderNotification"
+        
+        // beta code
+        notificationCenter.delegate = UIApplication.shared.delegate as! AppDelegate
+        let showTask = UNNotificationAction(identifier: "showTask", title: "Show Task", options: .foreground)
+        let dismiss = UNNotificationAction(identifier: "dismissNotification", title: "Dismiss", options: .destructive)
+        let category = UNNotificationCategory(identifier: "reminderNotification", actions: [showTask,dismiss], intentIdentifiers: [], options: .allowAnnouncement)
+        notificationCenter.setNotificationCategories([category])
+        // end of beta code
+        
+        let components = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: date)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        let request = UNNotificationRequest(identifier: categoryToModify.title!, content: content, trigger: trigger)
+        notificationCenter.add(request) { (error) in
+            if(error == nil)
+            {
+                print("No error in scheduling the notification.")
+            }
+            else
+            {
+                if let safeError = error
+                {
+                    print(safeError.localizedDescription)
+                    print("There was an error in adding our notification to the notification center.")
+                }
+            }
         }
     }
     
@@ -73,12 +112,6 @@ class datePickerController : UIViewController
                 reminderPicker.date = dateToSet
             }
         }
-    }
-    
-    
-    func sendReminderToCloud()
-    {
-        
     }
     
     //MARK: - CRUD Functionality
@@ -107,9 +140,3 @@ extension Date
 
 
 
-// notes
-/**
- - We may have to retrieve the date from the context here
- - So we will do this instead. UTC is the same time everywhere, so we will save the reminder date in UTC format and we will use UTC time to enable push notifications. There is no need to actually convert it to users local time.
- - Date is being saved to our database. When we print out the date from our database it is being printed out in UTC time which is what we want. 
- */
