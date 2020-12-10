@@ -34,7 +34,7 @@ class completedCategoriesController: UITableViewController {
     @IBAction func trashPressed(_ sender: UIBarButtonItem)
     {
         print(self.completedCategories.count)
-        let firstAlertController = UIAlertController(title: "Delete all completed tasks.", message: "This action will delete all completed tasks and this action cannot be reversed.", preferredStyle: .alert)
+        let firstAlertController = UIAlertController(title: "Delete all completed tasks", message: "This action will delete all completed tasks and this action cannot be reversed.", preferredStyle: .alert)
         let firstAlertAction = UIAlertAction(title: "Delete", style: .destructive) { (firstAlertAction) in
             while(self.completedCategories.count != 0)
             {

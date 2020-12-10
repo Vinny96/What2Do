@@ -39,22 +39,21 @@ class itemsViewController: UITableViewController {
         {
             guard let navBar = navigationController?.navigationBar else{fatalError("Navigation controller does not exist.")}
             navBar.backgroundColor = UIColor(hex: safeNavBarHex)
-            title = fromCategory?.title
-
         }
+        title = "Notes"
     }
     
     // MARK: - IB Actions
     @IBAction func addItem(_ sender: UIBarButtonItem)
     {
         var textField = UITextField()
-        let firstAlertController = UIAlertController(title: "Add sub task", message: "", preferredStyle: .alert)
+        let firstAlertController = UIAlertController(title: "Add note", message: "", preferredStyle: .alert)
         firstAlertController.addTextField { (alertTextField) in
             textField = alertTextField
             textField.autocorrectionType = .yes
-            textField.placeholder = "Enter sub task name here"
+            textField.placeholder = "Enter note here"
         }
-        let firstAlertAction = UIAlertAction(title: "Add new sub task", style: .default) { (firstAlertAction) in
+        let firstAlertAction = UIAlertAction(title: "Add Note", style: .default) { (firstAlertAction) in
             if(textField.text != "")
             {
                 let itemToAdd = Item(context: self.context)
@@ -86,32 +85,6 @@ class itemsViewController: UITableViewController {
             firstAlertController.addAction(secondAlertAction)
             present(firstAlertController, animated: true, completion: nil)
         }
-    }
-    
-    @IBAction func viewReminder(_ sender: UIBarButtonItem)
-    {
-        let reminderSet : String?
-        let reminderNotSet : String?
-        if let safeCategory = fromCategory
-        {
-            if let safeDate = safeCategory.reminderDate
-            {
-                reminderSet = ("Your current reminder is set for \(safeDate.localizedDescription)")
-                let firstAlertController = UIAlertController(title: "View Reminder", message: reminderSet, preferredStyle: .alert)
-                let firstAlertAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                firstAlertController.addAction(firstAlertAction)
-                present(firstAlertController, animated: true, completion: nil)
-            }
-            else
-            {
-                reminderNotSet = "There is no reminder that is currently set. Please press the bell button to create a reminder."
-                let firstAlertController = UIAlertController(title: "No Reminder Present", message: reminderNotSet, preferredStyle: .alert)
-                let firstAlertAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                firstAlertController.addAction(firstAlertAction)
-                present(firstAlertController, animated: true, completion: nil)
-            }
-        }
-        
     }
     
     // MARK: - Table view data source
@@ -209,8 +182,12 @@ class itemsViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         let destinationVC = segue.destination as! datePickerController
+        let buttonName = categories[categoryIndexPathToPass!.row].title
+        let backButton = UIBarButtonItem(title: buttonName, style: .plain, target: self, action: nil)
+        navigationItem.backBarButtonItem = backButton
         destinationVC.categoriesArray = categories
         destinationVC.categoryIndexPath = categoryIndexPathToPass
+        
     }
 }
 

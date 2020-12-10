@@ -20,18 +20,19 @@ class categoryViewController: UITableViewController {
     let colorPicker  = UIColorPickerViewController()
     var cellColorAsHex : String?
     let datePicker = UIDatePicker()
+   
+    
     
     
     
     override func viewDidLoad() {
        
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        tableView.rowHeight = 60.0
         super.viewDidLoad()
         colorPicker.delegate = self
         loadCategories()
-        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem = backBarButtonItem
+        tableView.register(UINib(nibName: "categoryCell", bundle: nil), forCellReuseIdentifier: "categoryCellToUse")
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,6 +44,7 @@ class categoryViewController: UITableViewController {
     @IBAction func addCategory(_ sender: UIBarButtonItem)
     {
         var textField = UITextField()
+        
         let firstAlertController = UIAlertController(title: "Add new task", message: "", preferredStyle: .alert)
        
         let secondAlertController = UIAlertController(title: "Choose colour for cell.", message: "", preferredStyle: .alert)
@@ -54,7 +56,7 @@ class categoryViewController: UITableViewController {
         firstAlertController.addTextField { (alertTextField) in
             textField = alertTextField
             textField.placeholder = "Enter new name here."
-            textField.autocorrectionType = .yes // beta code
+            textField.autocorrectionType = .yes
         }
         let firstAlertAction = UIAlertAction(title: "Enter new task", style: .default) { (firstAlertAction) in
             if(textField.text != "")
@@ -65,7 +67,7 @@ class categoryViewController: UITableViewController {
                 self.saveCategories()
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
-                    self.present(secondAlertController, animated: true, completion: nil) // used to be third alert controller still need to present the third alert controller.
+                    self.present(secondAlertController, animated: true, completion: nil)
                 }
             }
         }
@@ -94,21 +96,43 @@ class categoryViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete
-        {
-            let completedCategory = CompletedCategory(context: context)
-            // beta code
-            let notificationCenter = (UIApplication.shared.delegate as! AppDelegate).center
-            notificationCenter.removePendingNotificationRequests(withIdentifiers: [categories[indexPath.row].title!])
-            // end of beta code
-            completedCategory.title = categories[indexPath.row].title
-            saveCompletedCategories()
-            context.delete(categories[indexPath.row])
-            categories.remove(at: indexPath.row)
-            saveCategories()
-            tableView.deleteRows(at: [indexPath], with: .fade)
+   // MARK: - TableView Swipe Configurations
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "") { (action, view, completionHandler) in
+            let completedCategory = CompletedCategory(context: self.context)
+            let notificiationCenter = (UIApplication.shared.delegate as! AppDelegate).center
+            notificiationCenter.removePendingNotificationRequests(withIdentifiers: [self.categories[indexPath.row].title!])
+            completedCategory.title = self.categories[indexPath.row].title!
+            self.saveCompletedCategories()
+            self.context.delete(self.categories[indexPath.row])
+            self.categories.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            self.saveCategories()
+            completionHandler(true)
         }
+        action.backgroundColor = .green
+        action.image = UIImage(systemName: "checkmark")
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "") { (action, view, completionHandler) in
+            let notificationCenter = (UIApplication.shared.delegate as! AppDelegate).center
+            notificationCenter.removePendingNotificationRequests(withIdentifiers: [self.categories[indexPath.row].title!])
+            notificationCenter.removeDeliveredNotifications(withIdentifiers: [self.categories[indexPath.row].title!])
+            self.context.delete(self.categories[indexPath.row])
+            self.categories.remove(at: indexPath.row)
+            self.saveCategories()
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            completionHandler(true)
+        }
+        action.backgroundColor = .systemRed
+        action.image = UIImage(systemName: "trash.fill")
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
     }
     
     // MARK: - Tableview Datasource Methods
@@ -121,21 +145,33 @@ class categoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
-        print(indexPath)
-        cell.textLabel?.text = categories[indexPath.row].title
-        cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCellToUse", for: indexPath) as! categoryCell
+        cell.layer.cornerRadius = cell.frame.size.height / 3 // beta code 
+        if let safeCellTitle = categories[indexPath.row].title
+        {
+            cell.titleLabel.text = safeCellTitle
+            cell.titleLabel.numberOfLines = 0
+            cell.titleLabel.font = UIFont(name: "Futura", size: 18.0)
+        }
+        if let safeReminderDate = categories[indexPath.row].reminderDate
+        {
+            cell.dateLabel.font = UIFont(name: "Futura", size: 18.0)
+            cell.dateLabel.numberOfLines = 0
+            let dateToPrint = safeReminderDate.returnDate()
+            cell.dateLabel.text = dateToPrint
+        }
         initialCellIndexPath = indexPath
         if let safeRgb = categories[indexPath.row].hexVal
         {
             cell.backgroundColor = UIColor(hex: safeRgb)
         }
-        cell.textLabel?.numberOfLines = 0
         return cell
     }
     
     // MARK: - Functions
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = backBarButtonItem
         if(segue.identifier == "categoryToItems")
         {
             let destinationSegue : itemsViewController = segue.destination as! itemsViewController
@@ -145,7 +181,7 @@ class categoryViewController: UITableViewController {
                 destinationSegue.navBarColourAsHex = categories[safeCellIndexPath.row].hexVal
                 destinationSegue.categories = categories
                 destinationSegue.categoryIndexPathToPass = safeCellIndexPath
-                
+                backBarButtonItem.title = categories[safeCellIndexPath.row].title
             }
         }
         if(segue.identifier == "toCompleteCategories")
@@ -162,7 +198,7 @@ class categoryViewController: UITableViewController {
         present(colorPicker, animated: true, completion: nil)
     }
     
-    // beta code that will be called from the app deleagte UNNotificationCenter delegate. This method works when app is in background or foreground.
+    // code that will be called from the app deleagte UNNotificationCenter delegate. This method works when app is in background or foreground.
     func takeToItemsVCFromLocalNotif(categoryNameAsString name : String, storyBoardToUse storyBoard : UIStoryboard)
     {
         // we need to run a search operation on the category array to find out what name the index is at. Will have O(N) run time
@@ -174,8 +210,7 @@ class categoryViewController: UITableViewController {
         itemsVc.categoryIndexPathToPass = indexPathToUse
         loadCategories()
         itemsVc.categories = categories
-        // getting an error as there are not objects in the categoryArray we have to load them in from coreData
-        itemsVc.navBarColourAsHex = categories[indexPathToUse.row].hexVal // getting an index out of range error
+        itemsVc.navBarColourAsHex = categories[indexPathToUse.row].hexVal
         itemsVc.fromCategory = categories[indexPathToUse.row]
         let navController = UIApplication.shared.windows[0].rootViewController as! UINavigationController
         navController.pushViewController(itemsVc, animated: true)
@@ -200,7 +235,7 @@ class categoryViewController: UITableViewController {
         print("The index of the category is at \(index)")
         return index
     }
-    // end of beta code
+    // end of code
     
     // MARK: - CRUD Implementation
     func saveCategories()
@@ -229,7 +264,7 @@ class categoryViewController: UITableViewController {
     
     func loadCategories(fetchRequest : NSFetchRequest<Category> = Category.fetchRequest() )
     {
-        let sortDescriptor : NSSortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        let sortDescriptor : NSSortDescriptor = NSSortDescriptor(key: "reminderDate", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         do
         {
@@ -318,5 +353,23 @@ extension UIColor
     }
 }
 
+//MARK: - Date Extension and related extensiosn
+
+extension Formatter
+{
+    static let date = DateFormatter()
+}
+
+extension Date
+{
+    func returnDate(dateStyle : DateFormatter.Style = .short, timeStyle : DateFormatter.Style = .short, dateLocale : Locale = Locale.current, inTimeZone : TimeZone = .current) -> String
+    {
+        Formatter.date.locale = dateLocale
+        Formatter.date.timeZone = inTimeZone
+        Formatter.date.dateStyle = dateStyle
+        Formatter.date.timeStyle = timeStyle
+        return Formatter.date.string(from: self)
+    }
+}
 
 

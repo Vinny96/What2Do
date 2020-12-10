@@ -17,16 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="categoryCell" id="5hl-aw-0Fi">
-                                <rect key="frame" x="0.0" y="28" width="390" height="43.666667938232422"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5hl-aw-0Fi" id="IgK-eq-ODT">
-                                    <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="U5a-S0-Zzu" id="yAF-J5-H1k"/>
                             <outlet property="delegate" destination="U5a-S0-Zzu" id="1Nv-y7-6Cj"/>
@@ -131,17 +121,11 @@
                                     <action selector="addReminder:" destination="j5x-Em-8ml" id="R4J-7S-wJN"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="Item" image="eye" catalog="system" id="Hse-Ry-OmN">
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <connections>
-                                    <action selector="viewReminder:" destination="j5x-Em-8ml" id="k3E-H7-C1I"/>
-                                </connections>
-                            </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <segue destination="zna-E6-UhI" kind="presentation" identifier="toDatePicker" id="Hw9-uN-YZA"/>
+                        <segue destination="zna-E6-UhI" kind="show" identifier="toDatePicker" id="Hw9-uN-YZA"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bwl-kW-JSz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -153,11 +137,11 @@
             <objects>
                 <viewController id="zna-E6-UhI" customClass="datePickerController" customModule="What2Do" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zvu-nw-K6p">
-                        <rect key="frame" x="0.0" y="0.0" width="390" height="790"/>
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="3Ix-3W-jpN" userLabel="reminderView">
-                                <rect key="frame" x="35" y="80" width="320" height="211"/>
+                                <rect key="frame" x="35" y="220" width="320" height="211"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current Reminder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1fo-yR-uaf">
                                         <rect key="frame" x="68.666666666666671" y="0.0" width="182.66666666666663" height="50"/>
@@ -201,7 +185,9 @@
                             <constraint firstItem="3Ix-3W-jpN" firstAttribute="leading" secondItem="dHm-xy-3IN" secondAttribute="leading" constant="35" id="okj-XL-F1A"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="jSy-Ta-rGO"/>
+                    <navigationItem key="navigationItem" id="jSy-Ta-rGO">
+                        <barButtonItem key="backBarButtonItem" title="&quot;&quot;" id="XPT-by-i5g"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="reminderPicker" destination="49w-ur-aWY" id="e9N-jz-Q7k"/>
                         <outlet property="saveReminderButton" destination="FU1-TZ-vkj" id="x4b-oo-4mE"/>
@@ -242,7 +228,6 @@
         <image name="arrowshape.turn.up.left.fill" catalog="system" width="128" height="106"/>
         <image name="bell.fill" catalog="system" width="128" height="124"/>
         <image name="checkmark.rectangle.fill" catalog="system" width="128" height="93"/>
-        <image name="eye" catalog="system" width="128" height="81"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="trash.fill" catalog="system" width="121" height="128"/>
         <namedColor name="navBarColor">

@@ -33,6 +33,7 @@ class datePickerController : UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        title = "Create Reminder"
         notificationCenter.delegate = (UIApplication.shared.delegate as! AppDelegate)
         reminderPicker.datePickerMode = .dateAndTime
         reminderPicker.preferredDatePickerStyle = .automatic
@@ -46,7 +47,7 @@ class datePickerController : UIViewController
     @IBAction func saveReminderPressed(_ sender: Any)
     {
         setDateForCategory()
-        dismiss(animated: true, completion: nil)
+        navigationController?.popViewController(animated: true)
     }
     
     
@@ -73,14 +74,22 @@ class datePickerController : UIViewController
         content.body = ("Its time to start on \(categoryToModify.title!)")
         content.sound = UNNotificationSound.default
         content.categoryIdentifier = "reminderNotification"
-        
         // beta code
+        // we need to call the loadCategoriesWithoutReload method from CategoryVC here
+        if let rootVc = navigationController?.viewControllers.first
+        {
+            let safeCategoryVc = rootVc as! categoryViewController
+            safeCategoryVc.loadCategories()
+        }
+        // end of beta code
+        
+        // adding notification actions
         notificationCenter.delegate = UIApplication.shared.delegate as! AppDelegate
         let showTask = UNNotificationAction(identifier: "showTask", title: "Show Task", options: .foreground)
         let dismiss = UNNotificationAction(identifier: "dismissNotification", title: "Dismiss", options: .destructive)
         let category = UNNotificationCategory(identifier: "reminderNotification", actions: [showTask,dismiss], intentIdentifiers: [], options: .allowAnnouncement)
         notificationCenter.setNotificationCategories([category])
-        // end of beta code
+        // end of notification action
         
         let components = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
@@ -126,6 +135,7 @@ class datePickerController : UIViewController
             print(error.localizedDescription)
         }
     }
+    
     
     
 }

@@ -115,7 +115,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate
             let categoryName = response.notification.request.identifier
             print("The category name is the following: \(categoryName)")
             let storyBoard = UIStoryboard.init(name: "Main", bundle: Bundle.main)
-            let categoryVC = storyBoard.instantiateViewController(identifier: "categoryViewControllerID") as categoryViewController
+            let categoryVC = storyBoard.instantiateViewController(identifier: "categoryViewControllerID") as categoryViewController // need to refactor this 
             categoryVC.takeToItemsVCFromLocalNotif(categoryNameAsString: categoryName, storyBoardToUse: storyBoard)
             //end of beta code 
         }

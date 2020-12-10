@@ -19,6 +19,8 @@
 		2F96221A2545D74800864E78 /* What2DoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F9622192545D74800864E78 /* What2DoUITests.swift */; };
 		2F9622352545DE7D00864E78 /* Notes in Resources */ = {isa = PBXBuildFile; fileRef = 2F9622342545DE7D00864E78 /* Notes */; };
 		2FA32E9825599B1A00FDFFB2 /* completedCategoriesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA32E9725599B1A00FDFFB2 /* completedCategoriesController.swift */; };
+		2FC37F0C258009DB00C914CC /* categoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC37F0A258009DB00C914CC /* categoryCell.swift */; };
+		2FC37F0D258009DB00C914CC /* categoryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2FC37F0B258009DB00C914CC /* categoryCell.xib */; };
 		2FE71C1F254B1A5F001235EB /* datePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE71C1E254B1A5F001235EB /* datePickerController.swift */; };
 		2FF63B582545F88E00A86025 /* itemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF63B572545F88E00A86025 /* itemsViewController.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +62,8 @@
 		2F96221B2545D74800864E78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2F9622342545DE7D00864E78 /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Notes; sourceTree = "<group>"; };
 		2FA32E9725599B1A00FDFFB2 /* completedCategoriesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = completedCategoriesController.swift; sourceTree = "<group>"; };
+		2FC37F0A258009DB00C914CC /* categoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = categoryCell.swift; sourceTree = "<group>"; };
+		2FC37F0B258009DB00C914CC /* categoryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = categoryCell.xib; sourceTree = "<group>"; };
 		2FE71C1E254B1A5F001235EB /* datePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = datePickerController.swift; sourceTree = "<group>"; };
 		2FF63B572545F88E00A86025 /* itemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = itemsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -149,6 +153,8 @@
 			isa = PBXGroup;
 			children = (
 				2F9621FA2545D74700864E78 /* Main.storyboard */,
+				2FC37F0A258009DB00C914CC /* categoryCell.swift */,
+				2FC37F0B258009DB00C914CC /* categoryCell.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -280,6 +286,7 @@
 				2F82AC2125584D5700C28876 /* GoogleService-Info.plist in Resources */,
 				2F9622352545DE7D00864E78 /* Notes in Resources */,
 				2F9621FC2545D74700864E78 /* Main.storyboard in Resources */,
+				2FC37F0D258009DB00C914CC /* categoryCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,6 +314,7 @@
 				2F9621F92545D74700864E78 /* categoryViewController.swift in Sources */,
 				2FA32E9825599B1A00FDFFB2 /* completedCategoriesController.swift in Sources */,
 				2FF63B582545F88E00A86025 /* itemsViewController.swift in Sources */,
+				2FC37F0C258009DB00C914CC /* categoryCell.swift in Sources */,
 				2F9621FF2545D74700864E78 /* What2Do.xcdatamodeld in Sources */,
 				2F9621F52545D74700864E78 /* AppDelegate.swift in Sources */,
 				2F9621F72545D74700864E78 /* SceneDelegate.swift in Sources */,
@@ -494,7 +502,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.03;
+				MARKETING_VERSION = 1.051;
 				PRODUCT_BUNDLE_IDENTIFIER = com.What2Do.Vinny;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -515,7 +523,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.03;
+				MARKETING_VERSION = 1.051;
 				PRODUCT_BUNDLE_IDENTIFIER = com.What2Do.Vinny;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
