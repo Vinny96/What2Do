@@ -9,14 +9,47 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Current Tasks View Controller-->
+        <scene sceneID="sVo-No-naa">
+            <objects>
+                <tableViewController id="vfv-iU-PiP" customClass="currentTasksViewController" customModule="What2Do" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="goz-id-pyo">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" name="navBarColor"/>
+                        <color key="separatorColor" name="textColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="todayCell" id="C4T-Jd-UHD">
+                                <rect key="frame" x="0.0" y="28" width="390" height="43.666667938232422"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="C4T-Jd-UHD" id="eey-dU-cOf">
+                                    <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" name="navBarColor"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="vfv-iU-PiP" id="3fe-Zp-E0a"/>
+                            <outlet property="delegate" destination="vfv-iU-PiP" id="Er7-zO-Zix"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="Tbz-bk-3lk"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qFE-hX-xLA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="855" y="-316"/>
+        </scene>
         <!--What2Do-->
         <scene sceneID="wWO-7L-VNu">
             <objects>
                 <tableViewController storyboardIdentifier="categoryViewControllerID" id="U5a-S0-Zzu" customClass="categoryViewController" customModule="What2Do" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="jHx-dP-LcS">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="jHx-dP-LcS">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="separatorColor" name="textColor"/>
+                        <sections/>
                         <connections>
                             <outlet property="dataSource" destination="U5a-S0-Zzu" id="yAF-J5-H1k"/>
                             <outlet property="delegate" destination="U5a-S0-Zzu" id="1Nv-y7-6Cj"/>
@@ -36,11 +69,18 @@
                                     <action selector="viewCompletedCategories:" destination="U5a-S0-Zzu" id="H52-4G-SXn"/>
                                 </connections>
                             </barButtonItem>
+                            <barButtonItem image="calendar" catalog="system" id="Ewn-Di-Twn">
+                                <color key="tintColor" name="textColor"/>
+                                <connections>
+                                    <action selector="goToTodaysTasks:" destination="U5a-S0-Zzu" id="0DQ-UL-57s"/>
+                                </connections>
+                            </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <segue destination="j5x-Em-8ml" kind="show" identifier="categoryToItems" id="uFj-s2-x4G"/>
                         <segue destination="BCd-Bw-VSi" kind="show" identifier="toCompletedCategories" id="MpZ-1E-FCz"/>
+                        <segue destination="vfv-iU-PiP" kind="show" identifier="goToTodayTask" id="6F9-HG-ANp"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7b0-zw-fJn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -51,10 +91,11 @@
         <scene sceneID="TxK-js-27e">
             <objects>
                 <tableViewController id="BCd-Bw-VSi" customClass="completedCategoriesController" customModule="What2Do" customModuleProvider="target" colorLabel="IBBuiltInLabel-Yellow" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="8jU-tL-Nmo">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="8jU-tL-Nmo">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="separatorColor" name="textColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="completedCell" id="Kwr-Gy-44Z">
                                 <rect key="frame" x="0.0" y="28" width="390" height="43.666667938232422"/>
@@ -63,6 +104,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" name="navBarColor"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -81,7 +123,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DCp-jf-Fio" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1034" y="124"/>
+            <point key="canvasLocation" x="1851" y="124"/>
         </scene>
         <!--Items View Controller-->
         <scene sceneID="lpD-Ty-j1g">
@@ -91,6 +133,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="separatorColor" name="textColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="itemCell" id="X95-4o-FS8">
                                 <rect key="frame" x="0.0" y="28" width="390" height="43.666667938232422"/>
@@ -99,6 +142,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" name="navBarColor"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -130,7 +174,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bwl-kW-JSz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="749" y="861"/>
+            <point key="canvasLocation" x="-49" y="980"/>
         </scene>
         <!--Date Picker Controller-->
         <scene sceneID="aYF-UJ-LWj">
@@ -177,7 +221,7 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="dHm-xy-3IN"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" name="navBarColor"/>
                         <constraints>
                             <constraint firstItem="3Ix-3W-jpN" firstAttribute="centerX" secondItem="zvu-nw-K6p" secondAttribute="centerX" id="8AB-4Y-NWq"/>
                             <constraint firstItem="3Ix-3W-jpN" firstAttribute="top" secondItem="dHm-xy-3IN" secondAttribute="top" constant="80" id="ZdU-e7-jkG"/>
@@ -195,7 +239,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tl1-yc-LFV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1822" y="861"/>
+            <point key="canvasLocation" x="1006" y="980"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="5z8-Uz-EcS">
@@ -207,7 +251,7 @@
                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="barTintColor" name="navBarColor"/>
                         <textAttributes key="titleTextAttributes">
-                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
+                            <fontDescription key="fontDescription" name="Futura-Bold" family="Futura" pointSize="18"/>
                         </textAttributes>
                         <textAttributes key="largeTitleTextAttributes">
                             <fontDescription key="fontDescription" name="Futura-Bold" family="Futura" pointSize="32"/>
@@ -227,6 +271,7 @@
     <resources>
         <image name="arrowshape.turn.up.left.fill" catalog="system" width="128" height="106"/>
         <image name="bell.fill" catalog="system" width="128" height="124"/>
+        <image name="calendar" catalog="system" width="128" height="106"/>
         <image name="checkmark.rectangle.fill" catalog="system" width="128" height="93"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="trash.fill" catalog="system" width="121" height="128"/>

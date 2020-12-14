@@ -12,12 +12,12 @@ import CoreData
 class itemsViewController: UITableViewController {
 
     // variables
-    var items : [Item] = []
-    var categories : [Category] = []
-    var categoryIndexPathToPass : IndexPath?
-    var navBarColourAsHex : String?
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var fromCategory : Category?
+    internal var items : [Item] = []
+    internal var categories : [Category] = []
+    internal var categoryIndexPathToPass : IndexPath?
+    internal var navBarColourAsHex : String?
+    internal let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    internal var fromCategory : Category?
     {
        didSet
        {
@@ -31,6 +31,7 @@ class itemsViewController: UITableViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        tableView.backgroundColor = UIColor(named: "navBarColor")
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -147,7 +148,7 @@ class itemsViewController: UITableViewController {
     }
     
     // MARK: - CRUD Functionality
-    func saveItems()
+    private func saveItems()
     {
         do
         {
@@ -159,7 +160,7 @@ class itemsViewController: UITableViewController {
         }
     }
     
-    func loadItems(fetchRequest : NSFetchRequest<Item> = Item.fetchRequest())
+    private func loadItems(fetchRequest : NSFetchRequest<Item> = Item.fetchRequest())
     {
         if let safeCategory = fromCategory
         {

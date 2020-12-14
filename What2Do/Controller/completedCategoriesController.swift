@@ -12,8 +12,8 @@ import CoreData
 class completedCategoriesController: UITableViewController {
 
     // variables
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var completedCategories : [CompletedCategory] = []
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private var completedCategories : [CompletedCategory] = []
     
     
     //IB Outlets
@@ -27,7 +27,8 @@ class completedCategoriesController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
+        // self.navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
+        tableView.backgroundColor = UIColor(named: "navBarColor")
     }
     
     //MARK: - IB Actions
@@ -87,7 +88,7 @@ class completedCategoriesController: UITableViewController {
     }
     
     //MARK: - CRUD Functionality
-    func loadCompletedCategories(fetchRequest : NSFetchRequest<CompletedCategory> = CompletedCategory.fetchRequest())
+    private func loadCompletedCategories(fetchRequest : NSFetchRequest<CompletedCategory> = CompletedCategory.fetchRequest())
     {
         do
         {
@@ -99,7 +100,7 @@ class completedCategoriesController: UITableViewController {
         }
     }
     
-    func saveCompletedCategories()
+    private func saveCompletedCategories()
     {
         do
         {

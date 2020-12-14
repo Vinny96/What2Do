@@ -19,8 +19,10 @@
 		2F96221A2545D74800864E78 /* What2DoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F9622192545D74800864E78 /* What2DoUITests.swift */; };
 		2F9622352545DE7D00864E78 /* Notes in Resources */ = {isa = PBXBuildFile; fileRef = 2F9622342545DE7D00864E78 /* Notes */; };
 		2FA32E9825599B1A00FDFFB2 /* completedCategoriesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA32E9725599B1A00FDFFB2 /* completedCategoriesController.swift */; };
-		2FC37F0C258009DB00C914CC /* categoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC37F0A258009DB00C914CC /* categoryCell.swift */; };
-		2FC37F0D258009DB00C914CC /* categoryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2FC37F0B258009DB00C914CC /* categoryCell.xib */; };
+		2FCB47CD2583EDE900526722 /* taskViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCB47CB2583EDE900526722 /* taskViewCell.swift */; };
+		2FCB47CE2583EDE900526722 /* taskViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2FCB47CC2583EDE900526722 /* taskViewCell.xib */; };
+		2FCB47D32583FD9100526722 /* protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCB47D22583FD9100526722 /* protocols.swift */; };
+		2FCB47E52584171A00526722 /* currentTasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCB47E42584171A00526722 /* currentTasksViewController.swift */; };
 		2FE71C1F254B1A5F001235EB /* datePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE71C1E254B1A5F001235EB /* datePickerController.swift */; };
 		2FF63B582545F88E00A86025 /* itemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF63B572545F88E00A86025 /* itemsViewController.swift */; };
 /* End PBXBuildFile section */
@@ -62,8 +64,10 @@
 		2F96221B2545D74800864E78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2F9622342545DE7D00864E78 /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Notes; sourceTree = "<group>"; };
 		2FA32E9725599B1A00FDFFB2 /* completedCategoriesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = completedCategoriesController.swift; sourceTree = "<group>"; };
-		2FC37F0A258009DB00C914CC /* categoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = categoryCell.swift; sourceTree = "<group>"; };
-		2FC37F0B258009DB00C914CC /* categoryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = categoryCell.xib; sourceTree = "<group>"; };
+		2FCB47CB2583EDE900526722 /* taskViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskViewCell.swift; sourceTree = "<group>"; };
+		2FCB47CC2583EDE900526722 /* taskViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = taskViewCell.xib; sourceTree = "<group>"; };
+		2FCB47D22583FD9100526722 /* protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = protocols.swift; sourceTree = "<group>"; };
+		2FCB47E42584171A00526722 /* currentTasksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = currentTasksViewController.swift; sourceTree = "<group>"; };
 		2FE71C1E254B1A5F001235EB /* datePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = datePickerController.swift; sourceTree = "<group>"; };
 		2FF63B572545F88E00A86025 /* itemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = itemsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -127,6 +131,7 @@
 				2F9622052545D74800864E78 /* Info.plist */,
 				2F82AC2025584D5700C28876 /* GoogleService-Info.plist */,
 				2F9622342545DE7D00864E78 /* Notes */,
+				2FCB47D22583FD9100526722 /* protocols.swift */,
 			);
 			path = What2Do;
 			sourceTree = "<group>";
@@ -153,8 +158,8 @@
 			isa = PBXGroup;
 			children = (
 				2F9621FA2545D74700864E78 /* Main.storyboard */,
-				2FC37F0A258009DB00C914CC /* categoryCell.swift */,
-				2FC37F0B258009DB00C914CC /* categoryCell.xib */,
+				2FCB47CB2583EDE900526722 /* taskViewCell.swift */,
+				2FCB47CC2583EDE900526722 /* taskViewCell.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -174,6 +179,7 @@
 				2FF63B572545F88E00A86025 /* itemsViewController.swift */,
 				2FE71C1E254B1A5F001235EB /* datePickerController.swift */,
 				2FA32E9725599B1A00FDFFB2 /* completedCategoriesController.swift */,
+				2FCB47E42584171A00526722 /* currentTasksViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -284,9 +290,9 @@
 				2F9622042545D74800864E78 /* LaunchScreen.storyboard in Resources */,
 				2F9622012545D74800864E78 /* Assets.xcassets in Resources */,
 				2F82AC2125584D5700C28876 /* GoogleService-Info.plist in Resources */,
+				2FCB47CE2583EDE900526722 /* taskViewCell.xib in Resources */,
 				2F9622352545DE7D00864E78 /* Notes in Resources */,
 				2F9621FC2545D74700864E78 /* Main.storyboard in Resources */,
-				2FC37F0D258009DB00C914CC /* categoryCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,11 +318,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F9621F92545D74700864E78 /* categoryViewController.swift in Sources */,
+				2FCB47E52584171A00526722 /* currentTasksViewController.swift in Sources */,
 				2FA32E9825599B1A00FDFFB2 /* completedCategoriesController.swift in Sources */,
 				2FF63B582545F88E00A86025 /* itemsViewController.swift in Sources */,
-				2FC37F0C258009DB00C914CC /* categoryCell.swift in Sources */,
+				2FCB47CD2583EDE900526722 /* taskViewCell.swift in Sources */,
 				2F9621FF2545D74700864E78 /* What2Do.xcdatamodeld in Sources */,
 				2F9621F52545D74700864E78 /* AppDelegate.swift in Sources */,
+				2FCB47D32583FD9100526722 /* protocols.swift in Sources */,
 				2F9621F72545D74700864E78 /* SceneDelegate.swift in Sources */,
 				2FE71C1F254B1A5F001235EB /* datePickerController.swift in Sources */,
 			);

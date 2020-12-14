@@ -10,16 +10,17 @@ import CoreData
 import UserNotifications
 
 
+
 class categoryViewController: UITableViewController {
 
     // variables
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var categories : [Category] = []
-    var cellIndexPath : IndexPath?
-    var initialCellIndexPath : IndexPath? // used for colour.
-    let colorPicker  = UIColorPickerViewController()
-    var cellColorAsHex : String?
-    let datePicker = UIDatePicker()
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    internal var categories : [Category] = []
+    internal var cellIndexPath : IndexPath?
+    internal var initialCellIndexPath : IndexPath? // used for colour.
+    private let colorPicker  = UIColorPickerViewController()
+    private var cellColorAsHex : String?
+    private let datePicker = UIDatePicker()
    
     
     
@@ -31,7 +32,11 @@ class categoryViewController: UITableViewController {
         super.viewDidLoad()
         colorPicker.delegate = self
         loadCategories()
-        tableView.register(UINib(nibName: "categoryCell", bundle: nil), forCellReuseIdentifier: "categoryCellToUse")
+        tableView.register(UINib(nibName: "taskViewCell", bundle: nil), forCellReuseIdentifier: "taskCellToUse")
+        
+        // beta code
+        tableView.backgroundColor = UIColor(named: "navBarColor")
+        // end of bet a cod e
         
     }
     
@@ -72,7 +77,6 @@ class categoryViewController: UITableViewController {
             }
         }
         let firstAlertActionTwo = UIAlertAction(title: "Cancel", style: .cancel, handler: { (firstAlertActionTwo) in
-            print("The alert is now being dismissed.")
         })
         firstAlertController.addAction(firstAlertAction)
         firstAlertController.addAction(firstAlertActionTwo)
@@ -84,6 +88,12 @@ class categoryViewController: UITableViewController {
     {
         performSegue(withIdentifier: "toCompletedCategories", sender: self)
     }
+    
+    @IBAction func goToTodaysTasks(_ sender: Any)
+    {
+        performSegue(withIdentifier: "goToTodayTask", sender: self)
+    }
+    
     
     // MARK: - Tableview Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -111,7 +121,7 @@ class categoryViewController: UITableViewController {
             completionHandler(true)
         }
         action.backgroundColor = .green
-        action.image = UIImage(systemName: "checkmark")
+        action.image = UIImage(systemName: "checkmark.rectangle.fill")
         let configuration = UISwipeActionsConfiguration(actions: [action])
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
@@ -145,18 +155,14 @@ class categoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCellToUse", for: indexPath) as! categoryCell
-        cell.layer.cornerRadius = cell.frame.size.height / 3 // beta code 
+        let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellToUse", for: indexPath) as! taskViewCell
+        //cell.layer.cornerRadius = cell.frame.size.height / 3
         if let safeCellTitle = categories[indexPath.row].title
         {
             cell.titleLabel.text = safeCellTitle
-            cell.titleLabel.numberOfLines = 0
-            cell.titleLabel.font = UIFont(name: "Futura", size: 18.0)
         }
         if let safeReminderDate = categories[indexPath.row].reminderDate
         {
-            cell.dateLabel.font = UIFont(name: "Futura", size: 18.0)
-            cell.dateLabel.numberOfLines = 0
             let dateToPrint = safeReminderDate.returnDate()
             cell.dateLabel.text = dateToPrint
         }
@@ -167,6 +173,8 @@ class categoryViewController: UITableViewController {
         }
         return cell
     }
+    
+    
     
     // MARK: - Functions
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -184,22 +192,25 @@ class categoryViewController: UITableViewController {
                 backBarButtonItem.title = categories[safeCellIndexPath.row].title
             }
         }
-        if(segue.identifier == "toCompleteCategories")
+        if(segue.identifier == "toCompletedCategories")
         {
-            let _ : completedCategoriesController = segue.destination as! completedCategoriesController
-            print("Going into complete categories.")
+            backBarButtonItem.tintColor = UIColor(named: "textColor")
+        }
+        if(segue.identifier == "goToTodayTask")
+        {
+            backBarButtonItem.tintColor = UIColor(named: "textColor")
         }
     }
     
     
-    func selectColor()
+    private func selectColor()
     {
         colorPicker.supportsAlpha = true
         present(colorPicker, animated: true, completion: nil)
     }
     
     // code that will be called from the app deleagte UNNotificationCenter delegate. This method works when app is in background or foreground.
-    func takeToItemsVCFromLocalNotif(categoryNameAsString name : String, storyBoardToUse storyBoard : UIStoryboard)
+    internal func takeToItemsVCFromLocalNotif(categoryNameAsString name : String, storyBoardToUse storyBoard : UIStoryboard)
     {
         // we need to run a search operation on the category array to find out what name the index is at. Will have O(N) run time
         let indexReturned = getIndexOfCategoryName(categoryNameToFind: name)
@@ -216,7 +227,7 @@ class categoryViewController: UITableViewController {
         navController.pushViewController(itemsVc, animated: true)
     }
     
-    func getIndexOfCategoryName(categoryNameToFind : String) -> Int
+    private func getIndexOfCategoryName(categoryNameToFind : String) -> Int
     {
         var index : Int = 0
         loadCategories()
@@ -238,7 +249,7 @@ class categoryViewController: UITableViewController {
     // end of code
     
     // MARK: - CRUD Implementation
-    func saveCategories()
+    private func saveCategories()
     {
         do
         {
@@ -250,7 +261,7 @@ class categoryViewController: UITableViewController {
         }
     }
     
-    func saveCompletedCategories()
+    private func saveCompletedCategories()
     {
         do
         {
@@ -262,7 +273,7 @@ class categoryViewController: UITableViewController {
         }
     }
     
-    func loadCategories(fetchRequest : NSFetchRequest<Category> = Category.fetchRequest() )
+    internal func loadCategories(fetchRequest : NSFetchRequest<Category> = Category.fetchRequest() )
     {
         let sortDescriptor : NSSortDescriptor = NSSortDescriptor(key: "reminderDate", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
@@ -289,7 +300,7 @@ extension categoryViewController : UIColorPickerViewControllerDelegate
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
         var cellColor : UIColor = UIColor()
         cellColor = viewController.selectedColor
-        cellColorAsHex = cellColor.toHex()
+        cellColorAsHex = cellColor.toHex(alpha: true)
         if let safeIndexPath = initialCellIndexPath
         {
             categories[safeIndexPath.row].hexVal = cellColorAsHex
@@ -371,5 +382,8 @@ extension Date
         return Formatter.date.string(from: self)
     }
 }
+
+// MARK: - Custom Protocol Implementation
+
 
 
