@@ -12,7 +12,9 @@ class currentTasksViewController: UITableViewController {
 
     // variables
     private var todayTasks : [Category] = []
+    private var todayItems : [Item] = []
     private var allCategories : [Category] = []
+    private var allItems : [Item] = []
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     
@@ -20,6 +22,9 @@ class currentTasksViewController: UITableViewController {
         super.viewDidLoad()
         title = "Today's Tasks"
         loadCategories()
+        loadItems()
+        loadTodaysTasks()
+        getTodaysItems()
         
         
     }
@@ -53,19 +58,49 @@ class currentTasksViewController: UITableViewController {
     private func loadTodaysTasks()
     {
         // so what we want to do here is first we need to get the current date.
-        // we will then traverse through the allCategories array and we will stop only when the reminder date does not match to todays date.
-        let todaysDate = Date()
+        // will have an O(N) runtime best case and average case as well
+        for category in allCategories
+        {
+            if let safeReminderDate = category.reminderDate
+            {
+                let todaysDate  = Date()
+                let areDatesSame = safeReminderDate.compareMonth(dateToCompare: todaysDate, onlyMonthComponent: .month)
+                if areDatesSame == true
+                {
+                    todayTasks.append(category)
+                }
+            }
         
-        
-        
+        }
     }
     
+    private func getTodaysItems()
+    {
+        for item in allItems
+        {
+            // so as of right now the items are sorted by their reminderDate, then their parentCategoryTitle then their name. So they are basically in perfect order.
+            // So we could create an algorithm that finds out the starting index for the reminderDate and the ending index for the reminderDate. Remember this is sorted as well. This will have a run time of O(N)
+            // then we could take those two indexes and now we know what range to search for. That way we do not search the entire items array as most users will have items that have different reminderDates in there. The algorithm can return an array containing the starting index and the ending index.
+            // remember could also be dealing with the case wehre there may not be any items or tasks for the current date. 
+        }
+    }
     
     // MARK: - CRUD Implementation
     private func loadItems(fetchRequest : NSFetchRequest<Item> = Item.fetchRequest())
     {
-        
-        
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        let sortDescriptorTwo = NSSortDescriptor(key: "parentCategory.title", ascending: true)
+        let sortDescriptorThree = NSSortDescriptor(key: "parentCategory.reminderDate", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptorThree,sortDescriptorTwo,sortDescriptor]
+        do
+        {
+            try allItems = context.fetch(fetchRequest)
+        }
+        catch
+        {
+            print("There was an error in getting the items from the persistent store.")
+            print(error.localizedDescription)
+        }
     }
     
     private func loadCategories(fetchRequest : NSFetchRequest<Category> = Category.fetchRequest())
@@ -79,10 +114,54 @@ class currentTasksViewController: UITableViewController {
         }
         catch
         {
-            print("There ws an error in loading the categories from the array.")
+            print("There ws an error in loading the categories from the persistent store.")
             print(error.localizedDescription)
         }
     }
+
+}
+//MARK: - Date Extension
+extension Date
+{
+    func compareDays(dateToCompare : Date, onlyDayComponent dayComponent : Calendar.Component, currentCalendar : Calendar = .current) -> Bool
+    {
+        let dayOne = currentCalendar.component(dayComponent, from: self)
+        let dayTwo = currentCalendar.component(dayComponent, from: dateToCompare)
+        if(dayTwo - dayOne == 0)
+        {
+            return true
+        }
+        else
+        {
+            return false
+        }
+    }
+    
+    func compareMonth(dateToCompare : Date, onlyMonthComponent monthComponent : Calendar.Component, currentCalendar : Calendar = .current) -> Bool
+    {
+        var areDatesSame = false
+        let firstMonthToCompare = currentCalendar.component(monthComponent, from: self)
+        let secondMonthToCompare = currentCalendar.component(monthComponent, from: dateToCompare)
+        let difference = firstMonthToCompare - secondMonthToCompare
+        if(difference != 0)
+        {
+            return areDatesSame
+        }
+        else
+        {
+            let areDaysSame = compareDays(dateToCompare: dateToCompare, onlyDayComponent: .day)
+            if(areDaysSame == true)
+            {
+                areDatesSame = true
+                return areDatesSame
+            }
+            else
+            {
+                return areDatesSame
+            }
+        }
+    }
+    
     
 }
 
