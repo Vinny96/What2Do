@@ -24,7 +24,10 @@ class currentTasksViewController: UITableViewController {
         loadCategories()
         loadItems()
         loadTodaysTasks()
-        getTodaysItems()
+        let todaysDate = Date()
+        let indexReturned = binarySearch(dateToSearchFor: todaysDate)
+        print(indexReturned)
+        
     }
 
     // MARK: - Table view data source and delegate methods
@@ -75,6 +78,7 @@ class currentTasksViewController: UITableViewController {
     private func getTodaysItems()
     {
         let todayDate = Date()
+        print(todayDate)
         let arrayReturned = findStartAndEndIndexOfItems(dateToFindIdxFor: todayDate)
         print(arrayReturned)
     }
@@ -144,31 +148,35 @@ class currentTasksViewController: UITableViewController {
     
     private func binarySearch(dateToSearchFor : Date) -> Int
     {
+        // we have to format the date before searching so we can exclude the time
+        
         var startingIdx = 0
         var endingIdx = allItems.count - 1
         var middleIdx = 0
-        while(middleIdx >= 0 && middleIdx < allItems.count)
+        while(startingIdx <= endingIdx)
         {
             middleIdx = (startingIdx + endingIdx) / 2
             if let safeDate = allItems[middleIdx].parentCategory?.reminderDate!
             {
                 if(safeDate > dateToSearchFor)
                 {
-                    endingIdx = middleIdx
+                    endingIdx = middleIdx - 1
                     continue
                 }
                 else if(safeDate < dateToSearchFor)
                 {
-                    startingIdx = middleIdx
+                    startingIdx = middleIdx + 1
                     continue
                 }
                 else
                 {
+                    print(middleIdx)
                     return middleIdx
                 }
             }
             else
             {
+                print("There was no date for that particular index.")
                 break
             }
         }
