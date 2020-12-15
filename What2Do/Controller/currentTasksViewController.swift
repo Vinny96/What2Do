@@ -24,7 +24,6 @@ class currentTasksViewController: UITableViewController {
         loadCategories()
         loadItems()
         loadTodaysTasks()
-        getTodaysItems()
         
         
     }
@@ -76,13 +75,49 @@ class currentTasksViewController: UITableViewController {
     
     private func getTodaysItems()
     {
-        for item in allItems
+        
+    }
+    
+    private func findStartAndEndIndexOfItems() -> [Int]
+    {
+        var startingIndex = 0
+        var endingIndex = 0
+        var arrayOfIdxs : [Int] = []
+        
+        return arrayOfIdxs
+    }
+    
+    private func binarySearch(dateToSearchFor : Date) -> Int
+    {
+        var startingIdx = 0
+        var endingIdx = allItems.count - 1
+        var middleIdx = 0
+        while(middleIdx >= 0 && middleIdx < allItems.count)
         {
-            // so as of right now the items are sorted by their reminderDate, then their parentCategoryTitle then their name. So they are basically in perfect order.
-            // So we could create an algorithm that finds out the starting index for the reminderDate and the ending index for the reminderDate. Remember this is sorted as well. This will have a run time of O(N)
-            // then we could take those two indexes and now we know what range to search for. That way we do not search the entire items array as most users will have items that have different reminderDates in there. The algorithm can return an array containing the starting index and the ending index.
-            // remember could also be dealing with the case wehre there may not be any items or tasks for the current date. 
+            middleIdx = (startingIdx + endingIdx) / 2
+            if let safeDate = allItems[middleIdx].parentCategory?.reminderDate!
+            {
+                if(safeDate > dateToSearchFor)
+                {
+                    endingIdx = middleIdx
+                    continue
+                }
+                else if(safeDate < dateToSearchFor)
+                {
+                    startingIdx = middleIdx
+                    continue
+                }
+                else
+                {
+                    break
+                }
+            }
+            else
+            {
+                return -1
+            }
         }
+        return middleIdx
     }
     
     // MARK: - CRUD Implementation
