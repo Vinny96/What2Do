@@ -24,8 +24,7 @@ class currentTasksViewController: UITableViewController {
         loadCategories()
         loadItems()
         loadTodaysTasks()
-        
-        
+        getTodaysItems()
     }
 
     // MARK: - Table view data source and delegate methods
@@ -75,15 +74,71 @@ class currentTasksViewController: UITableViewController {
     
     private func getTodaysItems()
     {
-        
+        let todayDate = Date()
+        let arrayReturned = findStartAndEndIndexOfItems(dateToFindIdxFor: todayDate)
+        print(arrayReturned)
     }
     
-    private func findStartAndEndIndexOfItems() -> [Int]
+    private func findStartAndEndIndexOfItems(dateToFindIdxFor : Date) -> [Int]
     {
-        var startingIndex = 0
-        var endingIndex = 0
-        var arrayOfIdxs : [Int] = []
+        // variables
+        var arrayOfIdxs : [Int] = [0,0]
         
+        // conducting the search
+        let middleIdxReturned = binarySearch(dateToSearchFor: dateToFindIdxFor)
+        if(middleIdxReturned == -1)
+        {
+            return arrayOfIdxs // need to refactor here
+        }
+        else
+        {
+            var temporaryStartIdx = middleIdxReturned
+            while(true) // finding start index code
+            {
+                if temporaryStartIdx > 0
+                {
+                    if(allItems[temporaryStartIdx - 1].parentCategory?.reminderDate == dateToFindIdxFor)
+                    {
+                        temporaryStartIdx = temporaryStartIdx - 1
+                        continue
+                    }
+                    else
+                    {
+                        arrayOfIdxs.append(temporaryStartIdx)
+                        break
+                    }
+                }
+                else
+                {
+                    arrayOfIdxs.append(temporaryStartIdx)
+                    break
+                }
+            } // ending start index code
+            
+            // finding the end index code
+            var tempEndIdx = middleIdxReturned
+            while(true)
+            {
+                if tempEndIdx < allItems.count - 1
+                {
+                    if(allItems[tempEndIdx + 1].parentCategory?.reminderDate == dateToFindIdxFor)
+                    {
+                        tempEndIdx = tempEndIdx + 1
+                        continue
+                    }
+                    else
+                    {
+                        arrayOfIdxs.append(tempEndIdx)
+                        break
+                    }
+                }
+                else
+                {
+                    arrayOfIdxs.append(tempEndIdx)
+                    break
+                }
+            }
+        }
         return arrayOfIdxs
     }
     
@@ -109,15 +164,15 @@ class currentTasksViewController: UITableViewController {
                 }
                 else
                 {
-                    break
+                    return middleIdx
                 }
             }
             else
             {
-                return -1
+                break
             }
         }
-        return middleIdx
+        return -1
     }
     
     // MARK: - CRUD Implementation
