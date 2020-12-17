@@ -43,9 +43,13 @@ class currentTasksViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todayCell", for: indexPath)
-        cell.textLabel?.font = UIFont(name: "Futura", size: 17.0)
+        cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
+        cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.text = todayItems[todayItemIndexTracker].name
+        // beta code
+        
+        // end of beta code
         incrementTodayItemIndexTracker()
         return cell
     }
@@ -58,7 +62,11 @@ class currentTasksViewController: UITableViewController {
         let titleForHeader = todayTasks[section].title
         return titleForHeader
     }
-    
+  
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let heightForSection : CGFloat = 35.0
+        return heightForSection
+    }
     // MARK: - Functions
     private func loadTodaysTasks()
     {
