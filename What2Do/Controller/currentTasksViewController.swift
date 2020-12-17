@@ -16,11 +16,13 @@ class currentTasksViewController: UITableViewController {
     private var allCategories : [Category] = []
     private var allItems : [Item] = []
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
+    private var todayItemIndexTracker = 0
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Today's Tasks"
+        resetTodayItemIndexTracker()
         loadCategories()
         loadItems()
         loadTodaysTasks()
@@ -41,13 +43,15 @@ class currentTasksViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todayCell", for: indexPath)
-        cell.textLabel?.text = todayItems[indexPath.row].name
-        cell.textLabel?.font = UIFont(name: "Futura", size: 12.0)
+        cell.textLabel?.font = UIFont(name: "Futura", size: 17.0)
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.text = todayItems[todayItemIndexTracker].name
+        incrementTodayItemIndexTracker()
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -59,7 +63,10 @@ class currentTasksViewController: UITableViewController {
     private func loadTodaysTasks()
     {
         // so what we want to do here is first we need to get the current date.
-        // will have an O(N) runtime best case and average case as well
+        // will have an O(N) runtime best case and average case as well.
+        /**
+         We did implement an opitmization here as if tge category date exceeds todays date we can break so in average cases it may not always be O(n) it could be O(x/N) where x is the number of categories we actually load and N is the number of cateogories present.
+         */
         let currentCalendar = Calendar.current
         for category in allCategories
         {
@@ -143,6 +150,18 @@ class currentTasksViewController: UITableViewController {
         /**
          This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will on average will have a runtime of O(X/M), X being the number of items  in the items array we are accessing. Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for each category will be (N(log(M) + O(M)) which it self could be better than O(N*M). Remember that even though on the surface the loadItemsForToday Category has a run time of M/X when the tableView iw down loading all of the items this will come up to O(M).
          */
+    }
+    
+    func incrementTodayItemIndexTracker()
+    {
+        todayItemIndexTracker += 1
+        print(todayItemIndexTracker)
+    }
+    
+    func resetTodayItemIndexTracker()
+    {
+        todayItemIndexTracker = 0
+        print(todayItemIndexTracker)
     }
     
     // MARK: - CRUD Implementation
