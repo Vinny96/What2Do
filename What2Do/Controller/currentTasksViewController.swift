@@ -74,21 +74,50 @@ class currentTasksViewController: UITableViewController {
     
     private func loadTodaysItems()
     {
-        // this will also be O(N) run time
+        // this will also be O(N) run time, however we did optimize it so it will not always be O(N) but could be for example O(N/3) as chances are if there are a lot of items, not all of the items parentDate match the currentDate.
         for item in allItems
         {
             if let safeDate = item.parentCategory?.reminderDate
             {
                 let currentDate = Date()
+                let currentDateSmaller = currentDate.selfDateSmaller(dateToCompare: safeDate, onlyMonthComponent: .month)
                 let areSame = safeDate.compareMonth(dateToCompare: currentDate, onlyMonthComponent: .month)
                 if(areSame)
                 {
                     todayItems.append(item)
                 }
+                else if(currentDateSmaller)
+                {
+                    break
+                }
+                else
+                {
+                    continue
+                }
+                
             }
         }
+        /**
+         Function explanation : So the way this method works is the items allItems array is already going to be loaded in and populated with items. We then go through each of the items and compare the currentDate with the date of the item. We compare it via our methods we created as an extension to the date class. So if the dates are the same then we append it to our todayItems array which we are going to use to populate the items. If the currentDate is smaller then the items date then we can break as the items array is sorted via reminder date, so as we go further down the array, the dates will get larger and larger. In this case we can break as there is no need to iterate through the array anymore as the dates of the items will all be larger.If our current date is bigger than the items in the array we have to continue as there is a chance that there are old items in the array from previous dates,so we can't break here as if we do, there is a chance we will miss items from the current date.
+         */
     }
     
+    private func loadItemsForTodayCategory(getItemsFromCategory categoryToUse : Category) -> [Item]
+    {
+        
+        var itemsToReturn : [Item] = []
+        for item in todayItems
+        {
+            if(item.parentCategory?.title == categoryToUse.title)
+            {
+                itemsToReturn.append(item)
+            }
+        }
+        return itemsToReturn
+        /**
+         This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will on average will have a runtime of O(X/M), X being the number of items  in the items array we are accessing. Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for each category will be (N(log(M) + O(M)) which it self could be better than O(N*M). Remember that even though on the surface the loadItemsForToday Category has a run time of M/X when the tableView iw down loading all of the items this will come up to O(M).
+         */
+    }
     
     // MARK: - CRUD Implementation
     private func loadItems(fetchRequest : NSFetchRequest<Item> = Item.fetchRequest())
@@ -164,6 +193,35 @@ extension Date
             {
                 return areDatesSame
             }
+        }
+    }
+    
+    func selfDateSmaller(dateToCompare : Date, onlyMonthComponent : Calendar.Component, currentCalendar : Calendar = .current) -> Bool
+    {
+        var selfDateSmaller = false
+        let selfDate = currentCalendar.component(.month, from: self)
+        let datePassedIn = currentCalendar.component(.month, from: dateToCompare)
+        if(selfDate < datePassedIn)
+        {
+            return selfDateSmaller
+        }
+        else if(selfDate == datePassedIn)
+        {
+            let selfDateDay = currentCalendar.component(.day, from: self)
+            let datePassedInDay = currentCalendar.component(.day, from: dateToCompare)
+            if(selfDateDay < datePassedInDay)
+            {
+                selfDateSmaller = true
+                return selfDateSmaller
+            }
+            else
+            {
+                return selfDateSmaller
+            }
+        }
+        else
+        {
+            return selfDateSmaller
         }
     }
     
