@@ -34,17 +34,20 @@ class currentTasksViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return 0
+        let category = todayTasks[section]
+        let arrayOfItemsForCat = loadItemsForTodayCategory(getItemsFromCategory: category)
+        return arrayOfItemsForCat.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todayCell", for: indexPath)
+        cell.textLabel?.text = todayItems[indexPath.row].name
+        cell.textLabel?.font = UIFont(name: "Futura", size: 12.0)
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // code
+        print(indexPath.row)
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -57,6 +60,7 @@ class currentTasksViewController: UITableViewController {
     {
         // so what we want to do here is first we need to get the current date.
         // will have an O(N) runtime best case and average case as well
+        let currentCalendar = Calendar.current
         for category in allCategories
         {
             if let safeReminderDate = category.reminderDate
@@ -66,6 +70,28 @@ class currentTasksViewController: UITableViewController {
                 if areDatesSame == true
                 {
                     todayTasks.append(category)
+                }
+                else
+                {
+                    let todaysDateMonth = currentCalendar.component(.month, from: todaysDate)
+                    let categoryDateMonth = currentCalendar.component(.month, from: safeReminderDate)
+                    if(todaysDateMonth < categoryDateMonth)
+                    {
+                        let todayDateDay = currentCalendar.component(.day, from: todaysDate)
+                        let categoryDateDay = currentCalendar.component(.day, from: safeReminderDate)
+                        if(todayDateDay < categoryDateDay)
+                        {
+                            break
+                        }
+                        else
+                        {
+                            continue
+                        }
+                    }
+                    else
+                    {
+                        continue
+                    }
                 }
             }
         
