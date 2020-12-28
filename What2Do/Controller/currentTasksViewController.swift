@@ -65,7 +65,7 @@ class currentTasksViewController: UITableViewController {
             sectionTitle = safeSectionName
         }
         let timeReturned = getTimeForCategory(index: section)
-        titleForHeader = "\(sectionTitle), Start At : \(timeReturned)"
+        titleForHeader = "\(sectionTitle) \(timeReturned)"
         // end of beta code
         return titleForHeader
     }
@@ -81,13 +81,45 @@ class currentTasksViewController: UITableViewController {
         let calendar = Calendar.current
         if let safeDate = todayTasks[index].reminderDate
         {
-            let safeDateTime = calendar.component(.hour, from: safeDate)
-            let safeDateSeconds = calendar.component(.minute, from: safeDate)
-            combinedTimeAndSeconds = "\(safeDateTime):\(safeDateSeconds)"
+            let safeDateHour = calendar.component(.hour, from: safeDate)
+            print(safeDateHour)
+            let safeDateMinute = calendar.component(.minute, from: safeDate)
+            combinedTimeAndSeconds = returnFormattedTime(twentFourHourFormat: safeDateHour, minutesProvided: safeDateMinute)
         }
        return combinedTimeAndSeconds
     }
     
+    private func returnFormattedTime(twentFourHourFormat hourProvided : Int, minutesProvided : Int) -> String
+    {
+        let AmorPm = getAmOrPm(twentyFourHourFormat: hourProvided)
+        let twelveHourFormat = convertToTwelveHour(twentyFourHourFormat: hourProvided)
+        let formattedTime = "\(twelveHourFormat):\(minutesProvided) \(AmorPm)"
+        return formattedTime
+    }
+    
+    private func convertToTwelveHour(twentyFourHourFormat hourProvided : Int) -> Int
+    {
+        var hourToReturn = hourProvided
+        if(hourProvided > 12)
+        {
+            hourToReturn = hourProvided - 12
+        }
+        return hourToReturn
+    }
+    
+    private func getAmOrPm(twentyFourHourFormat hourProvided : Int) -> String
+    {
+        var AmOrPm = String()
+        if hourProvided >= 12
+        {
+            AmOrPm = "PM"
+        }
+        else
+        {
+            AmOrPm = "AM"
+        }
+        return AmOrPm
+    }
     
     private func loadTodaysTasks()
     {
@@ -177,20 +209,20 @@ class currentTasksViewController: UITableViewController {
         }
         return itemsToReturn
         /**
-         This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for each category will be (N(log(M) + O(M)) which it self could be better than O(N*M). Remember that even though on the surface the loadItemsForToday Category has a run time of M/X when the tableView is done loading all of the items this will come up to O(M). 
+         This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for each category will be (N(log(M) + O(M)) which it self could be better than O(N*M). Remember that even though on the surface the loadItemsForToday Category has a run time of X/M (X for the number of items being accessed) when the tableView is done loading all of the items this will come up to O(M).
          */
     }
     
     func incrementTodayItemIndexTracker()
     {
         todayItemIndexTracker += 1
-        print(todayItemIndexTracker)
+        //print(todayItemIndexTracker)
     }
     
     func resetTodayItemIndexTracker()
     {
         todayItemIndexTracker = 0
-        print(todayItemIndexTracker)
+        //print(todayItemIndexTracker)
     }
     
     // MARK: - CRUD Implementation
