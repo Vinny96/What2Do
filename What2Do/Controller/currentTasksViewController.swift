@@ -22,7 +22,6 @@ class currentTasksViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Today's Tasks"
-        resetTodayItemIndexTracker()
         loadCategories()
         loadItems()
         loadTodaysTasks()
@@ -46,8 +45,8 @@ class currentTasksViewController: UITableViewController {
         cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.text = todayItems[todayItemIndexTracker].name
-        incrementTodayItemIndexTracker()
+        //cell.textLabel?.text = todayItems[todayItemIndexTracker].name was causing a bug in which if the user swiped up or down or even rotated device the app would crash. 
+        cell.textLabel?.text = todayItems[indexPath.row].name
         return cell
     }
     
@@ -58,7 +57,6 @@ class currentTasksViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         //let sectionTitle = todayTasks[section].title
         var titleForHeader = String()
-        // beta code
         var sectionTitle = String()
         if let safeSectionName = todayTasks[section].title
         {
@@ -66,7 +64,6 @@ class currentTasksViewController: UITableViewController {
         }
         let timeReturned = getTimeForCategory(index: section)
         titleForHeader = "\(sectionTitle) \(timeReturned)"
-        // end of beta code
         return titleForHeader
     }
   
@@ -211,18 +208,6 @@ class currentTasksViewController: UITableViewController {
         /**
          This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for each category will be (N(log(M) + O(M)) which it self could be better than O(N*M). Remember that even though on the surface the loadItemsForToday Category has a run time of X/M (X for the number of items being accessed) when the tableView is done loading all of the items this will come up to O(M).
          */
-    }
-    
-    func incrementTodayItemIndexTracker()
-    {
-        todayItemIndexTracker += 1
-        //print(todayItemIndexTracker)
-    }
-    
-    func resetTodayItemIndexTracker()
-    {
-        todayItemIndexTracker = 0
-        //print(todayItemIndexTracker)
     }
     
     // MARK: - CRUD Implementation
