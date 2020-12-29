@@ -16,8 +16,11 @@ class currentTasksViewController: UITableViewController {
     private var allCategories : [Category] = []
     private var allItems : [Item] = []
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    private var todayItemIndexTracker = 0
 
+    
+    // beta variables
+    private var nestedTodayItems = [[Item]]()
+    private var itemsPerIndexCountArray : [Int] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +29,10 @@ class currentTasksViewController: UITableViewController {
         loadItems()
         loadTodaysTasks()
         loadTodaysItems()
+        // beta code
+        loadItemsPerIndexCountArray()
+        loadNestedArray()
+        // end of beta code
     }
 
     // MARK: - Table view data source and delegate methods
@@ -34,10 +41,9 @@ class currentTasksViewController: UITableViewController {
         return todayTasks.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let category = todayTasks[section]
-        let arrayOfItemsForCat = loadItemsForTodayCategory(getItemsFromCategory: category)
-        return arrayOfItemsForCat.count
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { // this method is called more than once by apple
+        let numberOfRowsInSection = loadItemsForTodayCategory(getItemsFromCategory: todayTasks[section])
+        return numberOfRowsInSection
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -45,8 +51,8 @@ class currentTasksViewController: UITableViewController {
         cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.numberOfLines = 0
-        //cell.textLabel?.text = todayItems[todayItemIndexTracker].name was causing a bug in which if the user swiped up or down or even rotated device the app would crash. 
-        cell.textLabel?.text = todayItems[indexPath.row].name
+        let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row]
+        cell.textLabel?.text = itemToDisplay.name
         return cell
     }
     
@@ -55,7 +61,6 @@ class currentTasksViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        //let sectionTitle = todayTasks[section].title
         var titleForHeader = String()
         var sectionTitle = String()
         if let safeSectionName = todayTasks[section].title
@@ -72,6 +77,75 @@ class currentTasksViewController: UITableViewController {
         return heightForSection
     }
     // MARK: - Functions
+    // beta code
+    private func loadNestedArray()
+    {
+        // now we can use the loadItemsPerIndexCountArray to our advantage
+        // so this array contains how many elements should be in each index of our nested array.
+        // so when we load this nested array we can make sure that that the number items we append to each index of the nested array does not exceed the corresponding value of the itemsPerIndexCount array.
+        // the count of the itemsPerIndexCount array represents the number of sections as well.
+        // so index 0 of the nested array should contain an array of 4 elements, index 1 of the nested array should contain an array of 3 elements and so on.
+        // now there is a way we can get this to be O(n) run time. We iterate through the today items array and we append each element to its corresponding index and when the count of that index exceeds the value of the index at itemsPerIndexCountArray we move on to the next index
+        if itemsPerIndexCountArray.count != 0
+        {
+            var arrayToAppend : [Item] = []
+            var indexTracker = 0
+            var itemsPerIndex = itemsPerIndexCountArray[indexTracker]
+            for index in 0...todayItems.count - 1
+            {
+                if(arrayToAppend.count < itemsPerIndex)
+                {
+                    arrayToAppend.append(todayItems[index])
+                    if(index == todayItems.count - 1)
+                    {
+                        nestedTodayItems.append(arrayToAppend)
+                    }
+                }
+                else
+                {
+                    indexTracker += 1
+                    nestedTodayItems.append(arrayToAppend)
+                    itemsPerIndex = itemsPerIndexCountArray[indexTracker]
+                    arrayToAppend.removeAll()
+                    arrayToAppend.append(todayItems[index])
+                }
+            }
+            // This method runs in linear time. But it does O(M) space M being the total number of today items.
+        }
+    }
+    
+    private func loadItemsPerIndexCountArray()
+    {
+        if(todayItems.count != 0)
+        {
+            var initalTaskName = todayItems[0].parentCategory?.title
+            var numberOfItemsForTask = 0
+            for index in 0...todayItems.count - 1
+            {
+                if todayItems[index].parentCategory?.title == initalTaskName
+                {
+                    numberOfItemsForTask += 1
+                    if(index == todayItems.count - 1)
+                    {
+                        itemsPerIndexCountArray.append(numberOfItemsForTask)
+                    }
+                    continue
+                }
+                else
+                {
+                    itemsPerIndexCountArray.append(numberOfItemsForTask)
+                    numberOfItemsForTask = 0
+                    initalTaskName = todayItems[index].parentCategory?.title
+                    numberOfItemsForTask += 1
+                    continue
+                }
+            }
+            print(itemsPerIndexCountArray)
+        }
+    }
+    
+    // end of beta code
+    
     private func getTimeForCategory(index : Int) -> String
     {
         var combinedTimeAndSeconds = "No valid time was inserted."
@@ -79,7 +153,6 @@ class currentTasksViewController: UITableViewController {
         if let safeDate = todayTasks[index].reminderDate
         {
             let safeDateHour = calendar.component(.hour, from: safeDate)
-            print(safeDateHour)
             let safeDateMinute = calendar.component(.minute, from: safeDate)
             combinedTimeAndSeconds = returnFormattedTime(twentFourHourFormat: safeDateHour, minutesProvided: safeDateMinute)
         }
@@ -193,9 +266,8 @@ class currentTasksViewController: UITableViewController {
          */
     }
     
-    private func loadItemsForTodayCategory(getItemsFromCategory categoryToUse : Category) -> [Item]
+    private func loadItemsForTodayCategory(getItemsFromCategory categoryToUse : Category) -> Int
     {
-        
         var itemsToReturn : [Item] = []
         for item in todayItems
         {
@@ -204,7 +276,8 @@ class currentTasksViewController: UITableViewController {
                 itemsToReturn.append(item)
             }
         }
-        return itemsToReturn
+        //nestedTodayItems.append(itemsToReturn)
+        return itemsToReturn.count
         /**
          This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for each category will be (N(log(M) + O(M)) which it self could be better than O(N*M). Remember that even though on the surface the loadItemsForToday Category has a run time of X/M (X for the number of items being accessed) when the tableView is done loading all of the items this will come up to O(M).
          */
@@ -243,7 +316,18 @@ class currentTasksViewController: UITableViewController {
             print(error.localizedDescription)
         }
     }
-
+    
+    private func saveContext()
+    {
+        do
+        {
+            try context.save()
+        }catch
+        {
+            print("There was an error in saving the context. Error was throw from currentTasksViewController.")
+            print(error.localizedDescription)
+        }
+    }
 }
 //MARK: - Date Extension
 extension Date
