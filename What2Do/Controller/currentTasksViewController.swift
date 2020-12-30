@@ -46,17 +46,42 @@ class currentTasksViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "todayCell", for: indexPath)
         cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.numberOfLines = 0
         let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row]
+        if(itemToDisplay.isDone == true)
+        {
+            cell.accessoryType = .checkmark
+        }
+        else
+        {
+            cell.accessoryType = .none
+        }
         cell.textLabel?.text = itemToDisplay.name
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        let itemSelected = nestedTodayItems[indexPath.section][indexPath.row]
+        if(itemSelected.isDone == false)
+        {
+            itemSelected.isDone = true
+            saveContext()
+            let cell = tableView.cellForRow(at: indexPath)
+            cell?.accessoryType = .checkmark
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+        else
+        {
+            itemSelected.isDone = false
+            saveContext()
+            let cell = tableView.cellForRow(at: indexPath)
+            cell?.accessoryType = .none
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -175,7 +200,6 @@ class currentTasksViewController: UITableViewController {
         {
             let safeDateHour = calendar.component(.hour, from: safeDate)
             let safeDateMinute = calendar.component(.minute, from: safeDate)
-            print(safeDateMinute)
             combinedTimeAndSeconds = returnFormattedTime(twentFourHourFormat: safeDateHour, minutesProvided: safeDateMinute)
         }
        return combinedTimeAndSeconds
