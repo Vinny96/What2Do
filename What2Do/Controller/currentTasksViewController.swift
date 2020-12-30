@@ -162,7 +162,6 @@ class currentTasksViewController: UITableViewController {
                     continue
                 }
             }
-            print(itemsPerIndexCountArray)
         }
     }
     
@@ -176,6 +175,7 @@ class currentTasksViewController: UITableViewController {
         {
             let safeDateHour = calendar.component(.hour, from: safeDate)
             let safeDateMinute = calendar.component(.minute, from: safeDate)
+            print(safeDateMinute)
             combinedTimeAndSeconds = returnFormattedTime(twentFourHourFormat: safeDateHour, minutesProvided: safeDateMinute)
         }
        return combinedTimeAndSeconds
@@ -185,7 +185,8 @@ class currentTasksViewController: UITableViewController {
     {
         let AmorPm = getAmOrPm(twentyFourHourFormat: hourProvided)
         let twelveHourFormat = convertToTwelveHour(twentyFourHourFormat: hourProvided)
-        let formattedTime = "\(twelveHourFormat):\(minutesProvided) \(AmorPm)"
+        let minutesFormat = getCorrectMinuteFormat(minutesProvided: minutesProvided)
+        let formattedTime = "\(twelveHourFormat):\(minutesFormat) \(AmorPm)"
         return formattedTime
     }
     
@@ -196,7 +197,37 @@ class currentTasksViewController: UITableViewController {
         {
             hourToReturn = hourProvided - 12
         }
+        if(hourProvided == 0)
+        {
+            hourToReturn = 12
+        }
         return hourToReturn
+    }
+    
+    private func getCorrectMinuteFormat(minutesProvided : Int) -> String
+    {
+        var minutesFormatted = String()
+        switch minutesProvided {
+        case 1:
+            minutesFormatted = "01"
+        case 2:
+            minutesFormatted = "02"
+        case 3:
+            minutesFormatted = "03"
+        case 4:
+            minutesFormatted = "04"
+        case 5:
+            minutesFormatted = "05"
+        case 6:
+            minutesFormatted = "06"
+        case 7:
+            minutesFormatted = "07"
+        case 8:
+            minutesFormatted = "08"
+        default:
+            minutesFormatted = "09"
+        }
+        return minutesFormatted
     }
     
     private func getAmOrPm(twentyFourHourFormat hourProvided : Int) -> String
