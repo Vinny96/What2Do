@@ -30,7 +30,6 @@ class currentTasksViewController: UITableViewController {
         loadTodaysTasks()
         loadTodaysItems()
         // beta code
-        loadItemsPerIndexCountArray()
         loadNestedArray()
         // end of beta code
     }
@@ -80,37 +79,53 @@ class currentTasksViewController: UITableViewController {
     // beta code
     private func loadNestedArray()
     {
-        // now we can use the loadItemsPerIndexCountArray to our advantage
-        // so this array contains how many elements should be in each index of our nested array.
-        // so when we load this nested array we can make sure that that the number items we append to each index of the nested array does not exceed the corresponding value of the itemsPerIndexCount array.
-        // the count of the itemsPerIndexCount array represents the number of sections as well.
-        // so index 0 of the nested array should contain an array of 4 elements, index 1 of the nested array should contain an array of 3 elements and so on.
-        // now there is a way we can get this to be O(n) run time. We iterate through the today items array and we append each element to its corresponding index and when the count of that index exceeds the value of the index at itemsPerIndexCountArray we move on to the next index
-        if itemsPerIndexCountArray.count != 0
+        loadItemsPerIndexCountArray()
+        if(itemsPerIndexCountArray.count != 0)
         {
-            var arrayToAppend : [Item] = []
-            var indexTracker = 0
-            var itemsPerIndex = itemsPerIndexCountArray[indexTracker]
+            var arrayForCat : [Item] = []
+            var itemsPerIdxCountIdx = 0
+            var itemsPerCat = itemsPerIndexCountArray[itemsPerIdxCountIdx]
+            var itemsAppended = 0
             for index in 0...todayItems.count - 1
             {
-                if(arrayToAppend.count < itemsPerIndex)
+                let itemToAdd = todayItems[index]
+                if(itemsAppended < itemsPerCat)
                 {
-                    arrayToAppend.append(todayItems[index])
+                    arrayForCat.append(itemToAdd)
+                    itemsAppended += 1
+                    // this code will run if we are at the last todayItem and it is the same as the item before it
                     if(index == todayItems.count - 1)
                     {
-                        nestedTodayItems.append(arrayToAppend)
+                        nestedTodayItems.append(arrayForCat)
+                        break
                     }
                 }
-                else
+                else // so here the number of itemsAppended is equal to the value of itemsPerCat
                 {
-                    indexTracker += 1
-                    nestedTodayItems.append(arrayToAppend)
-                    itemsPerIndex = itemsPerIndexCountArray[indexTracker]
-                    arrayToAppend.removeAll()
-                    arrayToAppend.append(todayItems[index])
+                    nestedTodayItems.append(arrayForCat)
+                    arrayForCat.removeAll()
+                    itemsAppended = 0
+                    // now we have to take care of the new item and assign a new value to itemsPerIdCountIdx only runs when item is not last item in array
+                    if(index != todayItems.count - 1)
+                    {
+                        itemsPerIdxCountIdx += 1
+                        itemsPerCat = itemsPerIndexCountArray[itemsPerIdxCountIdx]
+                        let itemToAdd = todayItems[index]
+                        arrayForCat.append(itemToAdd)
+                        itemsAppended += 1
+                        continue
+                    }
+                    // this code will run if we are the last item and it does not match the previous item
+                    if(index == todayItems.count - 1)
+                    {
+                        arrayForCat.append(todayItems[index])
+                        nestedTodayItems.append(arrayForCat)
+                        break
+                    }
+                    
                 }
             }
-            // This method runs in linear time. But it does O(M) space M being the total number of today items.
+            print(nestedTodayItems)
         }
     }
     
@@ -136,6 +151,13 @@ class currentTasksViewController: UITableViewController {
                     itemsPerIndexCountArray.append(numberOfItemsForTask)
                     numberOfItemsForTask = 0
                     initalTaskName = todayItems[index].parentCategory?.title
+                    if index == todayItems.count - 1 // beta code
+                    {
+                        // here the last item is a lone wolf it is the only item within that parent category so we have to cover this edge case
+                        numberOfItemsForTask += 1
+                        itemsPerIndexCountArray.append(numberOfItemsForTask)
+                        break
+                    }
                     numberOfItemsForTask += 1
                     continue
                 }
