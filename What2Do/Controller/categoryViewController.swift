@@ -33,10 +33,7 @@ class categoryViewController: UITableViewController {
         colorPicker.delegate = self
         loadCategories()
         tableView.register(UINib(nibName: "taskViewCell", bundle: nil), forCellReuseIdentifier: "taskCellToUse")
-        
-        // beta code
         tableView.backgroundColor = UIColor(named: "navBarColor")
-        // end of bet a cod e
         
     }
     
@@ -56,7 +53,18 @@ class categoryViewController: UITableViewController {
         let secondAlertAction = UIAlertAction(title: "Choose your colour", style: .default) { (secondAlertAction) in
             self.selectColor()
         }
+        let secondAlertActionOne = UIAlertAction(title: "Choose default colour", style: .default) { (secondAlertAction) in
+            if let safeIndexPath = self.initialCellIndexPath
+            {
+                self.categories[safeIndexPath.row].hexVal = "bedcfa"
+                self.saveCategories()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
         secondAlertController.addAction(secondAlertAction)
+        secondAlertController.addAction(secondAlertActionOne)
         
         firstAlertController.addTextField { (alertTextField) in
             textField = alertTextField
@@ -114,14 +122,11 @@ class categoryViewController: UITableViewController {
             notificiationCenter.removePendingNotificationRequests(withIdentifiers: [self.categories[indexPath.row].title!])
             completedCategory.title = self.categories[indexPath.row].title!
             self.saveCompletedCategories()
-            self.context.delete(self.categories[indexPath.row])
-            self.categories.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .fade)
-            self.saveCategories()
+            self.deleteCategory(indexPath: indexPath)
             completionHandler(true)
         }
-        action.backgroundColor = .green
-        action.image = UIImage(systemName: "checkmark.rectangle.fill")
+        action.backgroundColor = .systemGreen
+        action.title = "Completed"
         let configuration = UISwipeActionsConfiguration(actions: [action])
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
@@ -139,7 +144,7 @@ class categoryViewController: UITableViewController {
             completionHandler(true)
         }
         action.backgroundColor = .systemRed
-        action.image = UIImage(systemName: "trash.fill")
+        action.title = "Delete"
         let configuration = UISwipeActionsConfiguration(actions: [action])
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
@@ -206,6 +211,7 @@ class categoryViewController: UITableViewController {
     private func selectColor()
     {
         colorPicker.supportsAlpha = true
+        colorPicker.title = "Select color for cell"
         present(colorPicker, animated: true, completion: nil)
     }
     
@@ -259,6 +265,20 @@ class categoryViewController: UITableViewController {
             print(error.localizedDescription)
             print("Error in saving the categories.")
         }
+    }
+    
+    private func deleteCategory(indexPath : IndexPath)
+    {
+        let categoryToDelete = categories[indexPath.row]
+        // beta code
+        categoryToDelete.title = nil
+        categoryToDelete.reminderDate = nil
+        categoryToDelete.hexVal = nil
+        // beta code
+        context.delete(categoryToDelete)
+        categories.remove(at: indexPath.row)
+        saveCategories()
+        tableView.deleteRows(at: [indexPath], with: .fade)
     }
     
     private func saveCompletedCategories()
