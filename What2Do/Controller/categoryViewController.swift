@@ -120,6 +120,7 @@ class categoryViewController: UITableViewController {
             let completedCategory = CompletedCategory(context: self.context)
             let notificiationCenter = (UIApplication.shared.delegate as! AppDelegate).center
             notificiationCenter.removePendingNotificationRequests(withIdentifiers: [self.categories[indexPath.row].title!])
+            notificiationCenter.removeDeliveredNotifications(withIdentifiers: [self.categories[indexPath.row].title!])
             completedCategory.title = self.categories[indexPath.row].title!
             self.saveCompletedCategories()
             self.deleteCategory(indexPath: indexPath)
@@ -137,10 +138,7 @@ class categoryViewController: UITableViewController {
             let notificationCenter = (UIApplication.shared.delegate as! AppDelegate).center
             notificationCenter.removePendingNotificationRequests(withIdentifiers: [self.categories[indexPath.row].title!])
             notificationCenter.removeDeliveredNotifications(withIdentifiers: [self.categories[indexPath.row].title!])
-            self.context.delete(self.categories[indexPath.row])
-            self.categories.remove(at: indexPath.row)
-            self.saveCategories()
-            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            self.deleteCategory(indexPath: indexPath)
             completionHandler(true)
         }
         action.backgroundColor = .systemRed
@@ -161,9 +159,13 @@ class categoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellToUse", for: indexPath) as! taskViewCell
+        cell.textLabel?.text = ""
+        cell.dateLabel.text = ""
+        cell.backgroundColor = nil
         //cell.layer.cornerRadius = cell.frame.size.height / 3
         if let safeCellTitle = categories[indexPath.row].title
         {
+            print(safeCellTitle) // beta code
             cell.titleLabel.text = safeCellTitle
         }
         if let safeReminderDate = categories[indexPath.row].reminderDate
@@ -223,7 +225,7 @@ class categoryViewController: UITableViewController {
         // now we need to prepare the itemsViewController to be popped as the main VC
         let itemsVc = storyboard?.instantiateViewController(withIdentifier: "itemsViewControllerID") as! itemsViewController
         let indexPathToUse : IndexPath = [0,indexReturned]
-        print(indexPathToUse)
+        //print(indexPathToUse)
         itemsVc.categoryIndexPathToPass = indexPathToUse
         loadCategories()
         itemsVc.categories = categories
@@ -269,16 +271,11 @@ class categoryViewController: UITableViewController {
     
     private func deleteCategory(indexPath : IndexPath)
     {
-        let categoryToDelete = categories[indexPath.row]
-        // beta code
-        categoryToDelete.title = nil
-        categoryToDelete.reminderDate = nil
-        categoryToDelete.hexVal = nil
-        // beta code
-        context.delete(categoryToDelete)
+        context.delete(self.categories[indexPath.row])
         categories.remove(at: indexPath.row)
         saveCategories()
-        tableView.deleteRows(at: [indexPath], with: .fade)
+        self.tableView.deleteRows(at: [indexPath], with: .left)
+        
     }
     
     private func saveCompletedCategories()
