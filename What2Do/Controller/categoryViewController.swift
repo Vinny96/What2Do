@@ -21,6 +21,7 @@ class categoryViewController: UITableViewController {
     private let colorPicker  = UIColorPickerViewController()
     private var cellColorAsHex : String?
     private let datePicker = UIDatePicker()
+    private var categoryDictionary : [String : Bool] = [:]
    
     
     
@@ -32,6 +33,7 @@ class categoryViewController: UITableViewController {
         super.viewDidLoad()
         colorPicker.delegate = self
         loadCategories()
+        initializeDictionary() // beta code
         tableView.register(UINib(nibName: "taskViewCell", bundle: nil), forCellReuseIdentifier: "taskCellToUse")
         tableView.backgroundColor = UIColor(named: "navBarColor")
         
@@ -42,14 +44,14 @@ class categoryViewController: UITableViewController {
         navBar.backgroundColor = UIColor(named: "navBarColor")
     }
     
-    // IB Actions
+    // MARK: - IB Actions
     @IBAction func addCategory(_ sender: UIBarButtonItem)
     {
         var textField = UITextField()
         
         let firstAlertController = UIAlertController(title: "Add new task", message: "", preferredStyle: .alert)
        
-        let secondAlertController = UIAlertController(title: "Choose colour for cell.", message: "", preferredStyle: .alert)
+        let secondAlertController = UIAlertController(title: "Choose colour for cell", message: "", preferredStyle: .alert)
         let secondAlertAction = UIAlertAction(title: "Choose your colour", style: .default) { (secondAlertAction) in
             self.selectColor()
         }
@@ -75,12 +77,25 @@ class categoryViewController: UITableViewController {
             if(textField.text != "")
             {
                 let categoryToAdd = Category(context: self.context)
-                self.categories.append(categoryToAdd)
                 categoryToAdd.title = textField.text
-                self.saveCategories()
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    self.present(secondAlertController, animated: true, completion: nil)
+                let isCategoryInDictResult = self.isCategoryInDict(categoryToCheck: categoryToAdd)
+                if(isCategoryInDictResult == false)
+                {
+                    self.categories.append(categoryToAdd)
+                    self.saveCategories()
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        self.present(secondAlertController, animated: true, completion: nil)
+                    }
+                }
+                else
+                {
+                    let alertController = UIAlertController(title: "Cannot add task", message: "Cannot add task as task already exists.", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "Ok", style: .default) { (action) in
+                        self.context.delete(categoryToAdd)
+                    }
+                    alertController.addAction(action)
+                    self.present(alertController, animated: true, completion: nil)
                 }
             }
         }
@@ -122,6 +137,10 @@ class categoryViewController: UITableViewController {
             notificiationCenter.removePendingNotificationRequests(withIdentifiers: [self.categories[indexPath.row].title!])
             notificiationCenter.removeDeliveredNotifications(withIdentifiers: [self.categories[indexPath.row].title!])
             completedCategory.title = self.categories[indexPath.row].title!
+            if let safeTitle = completedCategory.title
+            {
+                self.categoryDictionary.removeValue(forKey: safeTitle)
+            }
             self.saveCompletedCategories()
             self.deleteCategory(indexPath: indexPath)
             completionHandler(true)
@@ -162,10 +181,8 @@ class categoryViewController: UITableViewController {
         cell.textLabel?.text = ""
         cell.dateLabel.text = ""
         cell.backgroundColor = nil
-        //cell.layer.cornerRadius = cell.frame.size.height / 3
         if let safeCellTitle = categories[indexPath.row].title
         {
-            print(safeCellTitle) // beta code
             cell.titleLabel.text = safeCellTitle
         }
         if let safeReminderDate = categories[indexPath.row].reminderDate
@@ -184,6 +201,25 @@ class categoryViewController: UITableViewController {
     
     
     // MARK: - Functions
+    
+    private func isCategoryInDict(categoryToCheck : Category) -> Bool
+    {
+        var isPresent = Bool()
+        if let safeTitle = categoryToCheck.title
+        {
+            let result = categoryDictionary[safeTitle]
+            if(result != nil)
+            {
+                isPresent = true
+            }
+            else
+            {
+                isPresent = false
+            }
+        }
+        return isPresent
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem = backBarButtonItem
@@ -215,6 +251,17 @@ class categoryViewController: UITableViewController {
         colorPicker.supportsAlpha = true
         colorPicker.title = "Select color for cell"
         present(colorPicker, animated: true, completion: nil)
+    }
+    
+    private func initializeDictionary()
+    {
+        for category in categories
+        {
+            if let safeTitle = category.title
+            {
+                categoryDictionary.updateValue(true, forKey: safeTitle)
+            }
+        }
     }
     
     // code that will be called from the app deleagte UNNotificationCenter delegate. This method works when app is in background or foreground.
