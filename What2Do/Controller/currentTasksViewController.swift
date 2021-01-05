@@ -231,26 +231,33 @@ class currentTasksViewController: UITableViewController {
     private func getCorrectMinuteFormat(minutesProvided : Int) -> String
     {
         var minutesFormatted = String()
-        switch minutesProvided {
-        case 1:
-            minutesFormatted = "01"
-        case 2:
-            minutesFormatted = "02"
-        case 3:
-            minutesFormatted = "03"
-        case 4:
-            minutesFormatted = "04"
-        case 5:
-            minutesFormatted = "05"
-        case 6:
-            minutesFormatted = "06"
-        case 7:
-            minutesFormatted = "07"
-        case 8:
-            minutesFormatted = "08"
-        default:
-            minutesFormatted = "09"
+        minutesFormatted = String(minutesProvided)
+        if(minutesProvided <= 9)
+        {
+            switch minutesProvided {
+            case 0:
+                minutesFormatted = "00"
+            case 1:
+                minutesFormatted = "01"
+            case 2:
+                minutesFormatted = "02"
+            case 3:
+                minutesFormatted = "03"
+            case 4:
+                minutesFormatted = "04"
+            case 5:
+                minutesFormatted = "05"
+            case 6:
+                minutesFormatted = "06"
+            case 7:
+                minutesFormatted = "07"
+            case 8:
+                minutesFormatted = "08"
+            default:
+                minutesFormatted = "09"
+            }
         }
+        
         return minutesFormatted
     }
     
