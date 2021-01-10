@@ -16,52 +16,72 @@ class currentTasksViewController: UITableViewController {
     private var allCategories : [Category] = []
     private var allItems : [Item] = []
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
-    
-    // beta variables
     private var nestedTodayItems = [[Item]]()
+    private var discrepancyIndex : Int = Int()
     private var itemsPerIndexCountArray : [Int] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Today's Tasks"
-        loadCategories()
-        loadItems()
-        loadTodaysTasks()
-        loadTodaysItems()
-        // beta code
-        loadNestedArray()
-        // end of beta code
+        initializeController()
     }
 
     // MARK: - Table view data source and delegate methods
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return todayTasks.count
+        return itemsPerIndexCountArray.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { // this method is called more than once by apple
-        let numberOfRowsInSection = loadItemsForTodayCategory(getItemsFromCategory: todayTasks[section])
+        let numberOfRowsInSection = getNumberOfItemsForCategory(getItemsFromCategory: todayTasks[section])
         return numberOfRowsInSection
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "todayCell", for: indexPath)
+        var discrepancySection : Int?
         cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.numberOfLines = 0
-        let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row]
-        if(itemToDisplay.isDone == true)
+        let isPresent = isDiscrepancyPresent()
+        if(isPresent == true)
         {
-            cell.accessoryType = .checkmark
+            discrepancySection = discrepancyIndex
+            if(indexPath.section == discrepancySection)
+            {
+                cell.textLabel?.text = ""
+                return cell
+            }
+            else
+            {
+                let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row] // here is where we get the index out of range error.
+                if(itemToDisplay.isDone == true)
+                {
+                    cell.accessoryType = .checkmark
+                }
+                else
+                {
+                    cell.accessoryType = .none
+                }
+                cell.textLabel?.text = itemToDisplay.name
+                return cell
+            }
         }
         else
         {
-            cell.accessoryType = .none
+            let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row] // here is where we get the index out of range error.
+            if(itemToDisplay.isDone == true)
+            {
+                cell.accessoryType = .checkmark
+            }
+            else
+            {
+                cell.accessoryType = .none
+            }
+            cell.textLabel?.text = itemToDisplay.name
+            return cell
         }
-        cell.textLabel?.text = itemToDisplay.name
-        return cell
+        
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -101,7 +121,18 @@ class currentTasksViewController: UITableViewController {
         return heightForSection
     }
     // MARK: - Functions
-    // beta code
+
+    private func initializeController()
+    {
+        title = "Today's Tasks"
+        loadCategories()
+        loadItems()
+        loadTodaysTasks()
+        loadTodaysItems()
+        loadNestedArray()
+    }
+    
+    
     private func loadNestedArray()
     {
         loadItemsPerIndexCountArray()
@@ -150,7 +181,13 @@ class currentTasksViewController: UITableViewController {
                     
                 }
             }
-            print(nestedTodayItems)
+        }
+        let discrepancyPresent = isDiscrepancyPresent()
+        if(discrepancyPresent == true)
+        {
+            let indexToInsert = getDiscrepancyIndex()
+            discrepancyIndex = indexToInsert
+            insertIntoNestedArray(indexToInsertIn: indexToInsert)
         }
     }
     
@@ -190,7 +227,39 @@ class currentTasksViewController: UITableViewController {
         }
     }
     
-    // end of beta code
+    private func isDiscrepancyPresent() -> Bool
+    {
+        var isDiscrepancyPresent = false
+        if(todayTasks.count != nestedTodayItems.count)
+        {
+            isDiscrepancyPresent = true
+        }
+        return isDiscrepancyPresent
+    }
+    
+    private func getDiscrepancyIndex() -> Int
+    {
+        var sectionToFix = Int()
+        var indexer = 0
+        for task in todayTasks
+        {
+            let numbersOfItems = getNumberOfItemsForCategory(getItemsFromCategory: task)
+            if(numbersOfItems == 0)
+            {
+                sectionToFix = indexer
+                break
+            }
+            indexer += 1
+        }
+        
+        return sectionToFix
+    }
+    
+    private func insertIntoNestedArray(indexToInsertIn : Int)
+    {
+        let subArrayToInsert : [Item] = []
+        nestedTodayItems.insert(subArrayToInsert, at: indexToInsertIn)
+    }
     
     private func getTimeForCategory(index : Int) -> String
     {
@@ -278,9 +347,9 @@ class currentTasksViewController: UITableViewController {
     private func loadTodaysTasks()
     {
         // so what we want to do here is first we need to get the current date.
-        // will have an O(N) runtime best case and average case as well.
+        // will have an O(N) runtime for best case, average case and worst case as well.
         /**
-         We did implement an opitmization here as if the category date exceeds todays date we can break so in average cases it may not always be O(n) it could be O(x/N) where x is the number of categories we actually load and N is the number of cateogories present.
+         We did implement an opitmization here as if the category date exceeds todays date we can break so in average cases it may not always be O(n) it could be O1/4(N)) where N is the number of categories we actually load.
          */
         let currentCalendar = Calendar.current
         for category in allCategories
@@ -322,7 +391,7 @@ class currentTasksViewController: UITableViewController {
     
     private func loadTodaysItems()
     {
-        // this will also be O(N) run time, however we did optimize it so it will not always be O(N) but could be for example O(N/3) as chances are if there are a lot of items, not all of the items parentDate match the currentDate.
+        // this will also be O(N) run time, however we did optimize it so it will not always be O(N) but could be for example O(1/3(N)) as chances are if there are a lot of items, not all of the items parentDate match the currentDate.
         for item in allItems
         {
             if let safeDate = item.parentCategory?.reminderDate
@@ -350,20 +419,23 @@ class currentTasksViewController: UITableViewController {
          */
     }
     
-    private func loadItemsForTodayCategory(getItemsFromCategory categoryToUse : Category) -> Int
+    private func getNumberOfItemsForCategory(getItemsFromCategory categoryToUse : Category) -> Int
     {
-        var itemsToReturn : [Item] = []
+        //var itemsToReturn : [Item] = []
+        var itemsCount = 0
         for item in todayItems
         {
             if(item.parentCategory?.title == categoryToUse.title)
             {
-                itemsToReturn.append(item)
+                //itemsToReturn.append(item)
+                itemsCount += 1
             }
         }
         //nestedTodayItems.append(itemsToReturn)
-        return itemsToReturn.count
+        //return itemsToReturn.count
+        return itemsCount
         /**
-         This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for each category will be (N(log(M) + O(M)) which it self could be better than O(N*M). Remember that even though on the surface the loadItemsForToday Category has a run time of X/M (X for the number of items being accessed) when the tableView is done loading all of the items this will come up to O(M).
+         This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case and average case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for all the categories will be (N(log(M) + O(M)) which it self could be better than O(N*M). 
          */
     }
     
