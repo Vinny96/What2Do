@@ -15,6 +15,7 @@ class categoryViewController: UITableViewController {
 
     // variables
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private let notificationCenter = (UIApplication.shared.delegate as! AppDelegate).center
     internal var categories : [Category] = []
     internal var cellIndexPath : IndexPath?
     internal var initialCellIndexPath : IndexPath? // used for colour.
@@ -22,7 +23,7 @@ class categoryViewController: UITableViewController {
     private var cellColorAsHex : String?
     private let datePicker = UIDatePicker()
     private var categoryDictionary : [String : Bool] = [:]
-   
+    
     
     
     
@@ -31,12 +32,7 @@ class categoryViewController: UITableViewController {
        
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         super.viewDidLoad()
-        colorPicker.delegate = self
-        loadCategories()
-        initializeDictionary() // beta code
-        tableView.register(UINib(nibName: "taskViewCell", bundle: nil), forCellReuseIdentifier: "taskCellToUse")
-        tableView.backgroundColor = UIColor(named: "navBarColor")
-        
+        initializeController()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -202,6 +198,16 @@ class categoryViewController: UITableViewController {
     
     // MARK: - Functions
     
+    private func initializeController()
+    {
+        colorPicker.delegate = self
+        loadCategories()
+        initializeDictionary() // beta code
+        tableView.register(UINib(nibName: "taskViewCell", bundle: nil), forCellReuseIdentifier: "taskCellToUse")
+        tableView.backgroundColor = UIColor(named: "navBarColor")
+        notificationCenter.removeAllDeliveredNotifications()
+    }
+    
     private func isCategoryInDict(categoryToCheck : Category) -> Bool
     {
         var isPresent = Bool()
@@ -318,7 +324,9 @@ class categoryViewController: UITableViewController {
     
     private func deleteCategory(indexPath : IndexPath)
     {
-        context.delete(self.categories[indexPath.row])
+        let categoryToDelete = categories[indexPath.row]
+        categoryDictionary.removeValue(forKey: categoryToDelete.title!) 
+        context.delete(categories[indexPath.row])
         categories.remove(at: indexPath.row)
         saveCategories()
         self.tableView.deleteRows(at: [indexPath], with: .left)
