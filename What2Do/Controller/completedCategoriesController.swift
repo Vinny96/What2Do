@@ -14,6 +14,7 @@ class completedCategoriesController: UITableViewController {
     // variables
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private var completedCategories : [CompletedCategory] = []
+    private let pasteBoard = UIPasteboard.general
     
     
     //IB Outlets
@@ -32,6 +33,19 @@ class completedCategoriesController: UITableViewController {
     }
     
     //MARK: - IB Actions
+    
+    @IBAction func helpPressed(_ sender: UIBarButtonItem)
+    {
+        let firstAlertController = UIAlertController(title: "Support URL", message: "https://vinny96.github.io/What2Do/", preferredStyle: .alert)
+        let firstAlertAction = UIAlertAction(title: "Copy URL", style: .default) { (firstAlertAction) in
+            self.pasteBoard.string = "https://vinny96.github.io/What2Do/"
+        }
+        let secondAlertAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        firstAlertController.addAction(firstAlertAction)
+        firstAlertController.addAction(secondAlertAction)
+        present(firstAlertController, animated: true, completion: nil)
+    }
+    
     @IBAction func trashPressed(_ sender: UIBarButtonItem)
     {
         print(self.completedCategories.count)
