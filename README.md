@@ -5,4 +5,4 @@ Privacy - Please note that we do not collect any data from our users. We only as
 
 The app has a clean and simple interface with intuitive controls. 
 
-For any questions/concerns or reporting a bug please send an email to vinnymadeapps@gmail.com.
+For any questions/concerns or reporting a bug please send an email to vinnymadeapps@gmail.com. I'll be more than happy to reply. 
