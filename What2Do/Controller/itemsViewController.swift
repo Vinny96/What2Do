@@ -137,14 +137,30 @@ class itemsViewController: UITableViewController {
        
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete
-        {
-            context.delete(items[indexPath.row])
-            saveItems()
-            items.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+    //MARK: - SwipeActionConfigurations
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
+            self.context.delete(self.items[indexPath.row])
+            self.items.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            self.saveItems()
         }
+        action.backgroundColor = .systemRed
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
+    }
+    
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let action = UIContextualAction(style: .normal, title: "Edit") { (action, view, completionHandler) in
+            self.editCell(indexPath: indexPath)
+        }
+        action.backgroundColor = .systemGreen
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
     }
     
     // MARK: - CRUD Functionality
@@ -188,6 +204,34 @@ class itemsViewController: UITableViewController {
         navigationItem.backBarButtonItem = backButton
         destinationVC.categoriesArray = categories
         destinationVC.categoryIndexPath = categoryIndexPathToPass
+        
+    }
+    
+    private func editCell(indexPath : IndexPath)
+    {
+        let itemToEdit = items[indexPath.row]
+        var textFieldToUse = UITextField()
+        let firstAlertController = UIAlertController(title: "Edit note", message: "", preferredStyle: .alert)
+        let firstAlertAction = UIAlertAction(title: "Save note", style: .default) { (firstAlertAction) in
+            if(textFieldToUse.text != nil)
+            {
+                itemToEdit.name = textFieldToUse.text
+                self.saveItems()
+                self.tableView.reloadRows(at: [indexPath], with: .left)
+            }
+        }
+        let secondAlertAction = UIAlertAction(title: "Cancel", style: .destructive) { (secondAlertAction) in
+            self.tableView.reloadRows(at: [indexPath], with: .none)
+            print("No changes were made")
+        }
+        firstAlertController.addTextField { (textField) in
+            textFieldToUse = textField
+            textFieldToUse.autocorrectionType = .yes
+            textFieldToUse.placeholder = "Press to edit note."
+        }
+        firstAlertController.addAction(firstAlertAction)
+        firstAlertController.addAction(secondAlertAction)
+        present(firstAlertController, animated: true, completion: nil)
         
     }
 }

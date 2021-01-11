@@ -36,7 +36,7 @@ class datePickerController : UIViewController
         title = "Create Reminder"
         notificationCenter.delegate = (UIApplication.shared.delegate as! AppDelegate)
         reminderPicker.datePickerMode = .dateAndTime
-        reminderPicker.preferredDatePickerStyle = .automatic
+        reminderPicker.preferredDatePickerStyle = .wheels
         saveReminderButton.layer.cornerRadius = 15.0
         initializeDatePicker()
         
