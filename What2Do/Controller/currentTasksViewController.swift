@@ -20,6 +20,10 @@ class currentTasksViewController: UITableViewController {
     private var discrepancyIndex : Int = Int()
     private var itemsPerIndexCountArray : [Int] = []
     
+    // beta variables
+    private var discrepancyArray : [Bool] = []
+    // end of beta variables
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeController()
@@ -28,7 +32,7 @@ class currentTasksViewController: UITableViewController {
     // MARK: - Table view data source and delegate methods
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return itemsPerIndexCountArray.count
+        return todayTasks.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { // this method is called more than once by apple
@@ -39,48 +43,22 @@ class currentTasksViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "todayCell", for: indexPath)
-        var discrepancySection : Int?
         cell.textLabel?.font = UIFont(name: "Futura", size: 18.0)
         cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.numberOfLines = 0
-        let isPresent = isDiscrepancyPresent()
-        if(isPresent == true)
+        print(indexPath)
+        let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row] // here is where we get the index out of range error.
+        print("Running in the cellForRowAt method.")
+        if(itemToDisplay.isDone == true)
         {
-            discrepancySection = discrepancyIndex
-            if(indexPath.section == discrepancySection)
-            {
-                cell.textLabel?.text = ""
-                return cell
-            }
-            else
-            {
-                let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row] // here is where we get the index out of range error.
-                if(itemToDisplay.isDone == true)
-                {
-                    cell.accessoryType = .checkmark
-                }
-                else
-                {
-                    cell.accessoryType = .none
-                }
-                cell.textLabel?.text = itemToDisplay.name
-                return cell
-            }
+            cell.accessoryType = .checkmark
         }
         else
         {
-            let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row] // here is where we get the index out of range error.
-            if(itemToDisplay.isDone == true)
-            {
-                cell.accessoryType = .checkmark
-            }
-            else
-            {
-                cell.accessoryType = .none
-            }
-            cell.textLabel?.text = itemToDisplay.name
-            return cell
+            cell.accessoryType = .none
         }
+        cell.textLabel?.text = itemToDisplay.name
+        return cell
         
     }
     
@@ -129,6 +107,7 @@ class currentTasksViewController: UITableViewController {
         loadItems()
         loadTodaysTasks()
         loadTodaysItems()
+        initializeDiscrepArray()
         loadNestedArray()
     }
     
@@ -182,13 +161,11 @@ class currentTasksViewController: UITableViewController {
                 }
             }
         }
-        let discrepancyPresent = isDiscrepancyPresent()
-        if(discrepancyPresent == true)
+        while(todayTasks.count != nestedTodayItems.count)
         {
-            let indexToInsert = getDiscrepancyIndex()
-            discrepancyIndex = indexToInsert
-            insertIntoNestedArray(indexToInsertIn: indexToInsert)
+            fixPossibleDiscrepancies()
         }
+        
     }
     
     private func loadItemsPerIndexCountArray()
@@ -227,38 +204,45 @@ class currentTasksViewController: UITableViewController {
         }
     }
     
-    private func isDiscrepancyPresent() -> Bool
+    private func fixPossibleDiscrepancies() // O(N*M) runtime. N for the number of elements in discrepancy Array and M for the number of elements that have to be pushed down the array due to an insert. 
     {
-        var isDiscrepancyPresent = false
-        if(todayTasks.count != nestedTodayItems.count)
+        // now we want to figure the indexes we want to fix so we are going to iterate through the dictionary
+        var index = 0
+        for element in discrepancyArray
         {
-            isDiscrepancyPresent = true
-        }
-        return isDiscrepancyPresent
-    }
-    
-    private func getDiscrepancyIndex() -> Int
-    {
-        var sectionToFix = Int()
-        var indexer = 0
-        for task in todayTasks
-        {
-            let numbersOfItems = getNumberOfItemsForCategory(getItemsFromCategory: task)
-            if(numbersOfItems == 0)
+            if(element == true)
             {
-                sectionToFix = indexer
-                break
+                insertIntoNestedArray(indexToInsertIn: index)
+                index += 1
             }
-            indexer += 1
+            else
+            {
+                index += 1
+            }
         }
         
-        return sectionToFix
     }
     
     private func insertIntoNestedArray(indexToInsertIn : Int)
     {
         let subArrayToInsert : [Item] = []
         nestedTodayItems.insert(subArrayToInsert, at: indexToInsertIn)
+    }
+    
+    private func initializeDiscrepArray() // O(N*M) runtime and O(P) space p for the number of discrepanices pushed to the array.
+    {
+        for task in todayTasks
+        {
+            let itemsInTaskCount = getNumberOfItemsForCategory(getItemsFromCategory: task)
+            if(itemsInTaskCount == 0)
+            {
+                discrepancyArray.append(true)
+            }
+            else
+            {
+                discrepancyArray.append(false)
+            }
+        }
     }
     
     private func getTimeForCategory(index : Int) -> String
@@ -421,13 +405,11 @@ class currentTasksViewController: UITableViewController {
     
     private func getNumberOfItemsForCategory(getItemsFromCategory categoryToUse : Category) -> Int
     {
-        //var itemsToReturn : [Item] = []
         var itemsCount = 0
         for item in todayItems
         {
             if(item.parentCategory?.title == categoryToUse.title)
             {
-                //itemsToReturn.append(item)
                 itemsCount += 1
             }
         }
@@ -435,7 +417,7 @@ class currentTasksViewController: UITableViewController {
         //return itemsToReturn.count
         return itemsCount
         /**
-         This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case and average case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for all the categories will be (N(log(M) + O(M)) which it self could be better than O(N*M). 
+         This function is going to be called for every category in today categories. So when loading the TableView cells it is going to have a combined run time of O(N*M). N because there are N categories and M because it will take M run time to completely pop off this function call. One potential optimization that can be implemented is perhaps doing a binary search for each category title in items array which will be log(M) and then using that index as a starting point to find our starting index and ending index for that category title. This will in the worst case and average case have a runtime of O(M). Chances are most users will have multiple items in there for their various categories. So then the combined runtime for this when we do call it for all the categories will be (N(log(M) + O(M)) which it self could be better than O(N*M).
          */
     }
     
