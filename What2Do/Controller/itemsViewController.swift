@@ -145,6 +145,7 @@ class itemsViewController: UITableViewController {
             self.items.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .left)
             self.saveItems()
+            // Here we are deleting the item from all persistent stores. We are also calling tableView.deleteRows so this will only delete the row at that specific index path as this will be more efficient than reloading the entire tableView. 
         }
         action.backgroundColor = .systemRed
         let configuration = UISwipeActionsConfiguration(actions: [action])

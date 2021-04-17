@@ -165,6 +165,9 @@ class currentTasksViewController: UITableViewController {
         {
             fixPossibleDiscrepancies()
         }
+        /**
+         So here we are loading the nestedItemsArray with all of the associated item array it will need in order to proeprly load the tableView. The reason why we have the while the loop at the end is because the code above does not take into account tasks that have no associated items with them. So what we do is we run the while loop and while the todayTasks.count != to nestedTodayItems.count this means we have a possible discrepancy. So we run the fixPossibleDiscrepancies method within the while loop so we can insert the empty array into the index where the discpreany is. Note that due to the way fixPossibleDiscrepanices algorithm works this all happens in the first pass in most cases. 
+         */
         
     }
     
@@ -214,6 +217,7 @@ class currentTasksViewController: UITableViewController {
             {
                 insertIntoNestedArray(indexToInsertIn: index)
                 index += 1
+                // here if the element in the array is true we insert an empty array into it.
             }
             else
             {
@@ -242,6 +246,9 @@ class currentTasksViewController: UITableViewController {
             {
                 discrepancyArray.append(false)
             }
+            /*
+             So what we are doing here is that we want to figure out which categories have zero items associated with them. For the categories that have zero items associated with them this is marked with a true as this array is a discrepancy since there is no items associated yet the tableView is still going to load it.
+             */
         }
     }
     
