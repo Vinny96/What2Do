@@ -1,5 +1,5 @@
 # What2Do
-An expense tracker app with a colorful and has subtle local notifications. Notification Center is used to deliver local notifications and CoreData is used to persist the task objects, the note objects, the colour associated with the task object and the reminder date. Core data is also used to create relationships between tasks and their respective notes. 
+An expense tracker app with a colorful and has subtle local notifications. Notification Center is used to deliver local notifications and CoreData is used to persist the task objects, the note objects, the colour associated with the task object and the reminder date. Core data is also used to create relationships between tasks and their respective notes. Available on App Store
 
 Privacy - Please note that we do not collect any data from our users. We only ask for permission to send notifications as we would like to remind you of your Task in a clean and subtle way.
 
