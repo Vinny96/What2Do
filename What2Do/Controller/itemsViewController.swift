@@ -40,6 +40,9 @@ class itemsViewController: UITableViewController {
         {
             guard let navBar = navigationController?.navigationBar else{fatalError("Navigation controller does not exist.")}
             navBar.backgroundColor = UIColor(hex: safeNavBarHex)
+            /**
+             So the reason why we do this in viewWillAppear is because everytime the client comes to this viewController we want the navbar to show the colour of their parent category. Any UI Changes is best done in viewWillAppear as this will be done prior to the viewController loading.
+             */
         }
         title = "Notes"
     }
@@ -145,7 +148,7 @@ class itemsViewController: UITableViewController {
             self.items.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .left)
             self.saveItems()
-            // Here we are deleting the item from all persistent stores. We are also calling tableView.deleteRows so this will only delete the row at that specific index path as this will be more efficient than reloading the entire tableView. 
+            // Here we are deleting the item from the persistent store. We are also calling tableView.deleteRows so this will only delete the row at that specific index path as this will be more efficient than reloading the entire tableView. 
         }
         action.backgroundColor = .systemRed
         let configuration = UISwipeActionsConfiguration(actions: [action])

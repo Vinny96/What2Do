@@ -47,7 +47,7 @@ class currentTasksViewController: UITableViewController {
         cell.textLabel?.textColor = UIColor(named: "textColor")
         cell.textLabel?.numberOfLines = 0
         print(indexPath)
-        let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row] // here is where we get the index out of range error.
+        let itemToDisplay = nestedTodayItems[indexPath.section][indexPath.row] 
         print("Running in the cellForRowAt method.")
         if(itemToDisplay.isDone == true)
         {
@@ -128,7 +128,7 @@ class currentTasksViewController: UITableViewController {
                 {
                     arrayForCat.append(itemToAdd)
                     itemsAppended += 1
-                    // this code will run if we are at the last todayItem and it is the same as the item before it
+                    // this code will run if we are at the last todayItem
                     if(index == todayItems.count - 1)
                     {
                         nestedTodayItems.append(arrayForCat)
@@ -193,7 +193,7 @@ class currentTasksViewController: UITableViewController {
                     itemsPerIndexCountArray.append(numberOfItemsForTask)
                     numberOfItemsForTask = 0
                     initalTaskName = todayItems[index].parentCategory?.title
-                    if index == todayItems.count - 1 // beta code
+                    if index == todayItems.count - 1
                     {
                         // here the last item is a lone wolf it is the only item within that parent category so we have to cover this edge case
                         numberOfItemsForTask += 1
@@ -407,6 +407,8 @@ class currentTasksViewController: UITableViewController {
         }
         /**
          Function explanation : So the way this method works is the items allItems array is already going to be loaded in and populated with items. We then go through each of the items and compare the currentDate with the date of the item. We compare it via our methods we created as an extension to the date class. So if the dates are the same then we append it to our todayItems array which we are going to use to populate the items. If the currentDate is smaller then the items date then we can break as the items array is sorted via reminder date, so as we go further down the array, the dates will get larger and larger. In this case we can break as there is no need to iterate through the array anymore as the dates of the items will all be larger.If our current date is bigger than the items in the array we have to continue as there is a chance that there are old items in the array from previous dates,so we can't break here as if we do, there is a chance we will miss items from the current date.
+         
+         Now for the future update one thing we can do that can be faster is this. We can do a modified binary search algorithm that will find the starting index of the currentDate and the ending index of the current date. Once we have this we can just have a for loop that starts from the starting index and goes into the ending index. We just append all of the items at this index to the todayItems array. This will have a log + constant time time complexity as we will only be searching the array log(n) times and appending a constant number of times. 
          */
     }
     

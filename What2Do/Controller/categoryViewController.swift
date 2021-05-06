@@ -455,7 +455,13 @@ extension Date
     }
 }
 
-
+/**
+ So the category dictionary is initialized at launch and only at launch. The reason why I chose to go with this route of updating the dictionary is due to user experience. So let's say if a user decides to add a category and we save this category to the context. The user will not add the same category again when they just added it. Even though it is a constant time operation my thinking into this was if they decided to add 20 more items or even 30 more items that constant time operation will add up. We are already initializing the dictionary when we first launch the app as  use the array we get from the persistent store and chances are that in the same session the user will not add the same category twice. They only run the risk of doing this when they are launching the app again with categories already in the persistent store. Also there is no reason to to update the dictionary twice since we are already doing it at every launch.
+ 
+ The initial cell index path was used to set the colour of the cell if the user wants to pick their own or even the default colour. The reason why this was done initially is we have a seperate method that takes care of letting the user pick their colour or using the default colour and we needed a way to remember the index path the user was on so we can set the colour for it. The way we create a new task is done with an IB Action and in an IB Action there is no way to pass in the current indexPath we are on so this is why we created the varible initialCellIndexPath so we can assign the indexPath we are on to this variable in the cellForRowAt method and we use this index path to assign the colour.
+ 
+ 
+ */
 
 
 

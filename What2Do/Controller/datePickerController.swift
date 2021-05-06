@@ -74,14 +74,17 @@ class datePickerController : UIViewController
         content.body = ("Its time to start on \(categoryToModify.title!)")
         content.sound = UNNotificationSound.default
         content.categoryIdentifier = "reminderNotification"
-        // beta code
+
         // we need to call the loadCategoriesWithoutReload method from CategoryVC here
         if let rootVc = navigationController?.viewControllers.first
         {
             let safeCategoryVc = rootVc as! categoryViewController
             safeCategoryVc.loadCategories()
+            /**
+             What can be done here in a future update is this can be replacd  with a notification observer communication pattern. What we can do here is that a moment a date has been picked we can post a notification regarding this and the observers which will be in the Category ViewController can call the loadCategories method. 
+             */
         }
-        // end of beta code
+
         
         // adding notification actions
         notificationCenter.delegate = UIApplication.shared.delegate as! AppDelegate
