@@ -22,7 +22,7 @@ class categoryViewController: UITableViewController {
     private let colorPicker  = UIColorPickerViewController()
     private var cellColorAsHex : String?
     private let datePicker = UIDatePicker()
-    private var categoryDictionary : [String : Bool] = [:]
+    private var categoryDictionary : [String : Bool] = [:] // used to verify that categories are not added twice
     
     
     
@@ -202,7 +202,7 @@ class categoryViewController: UITableViewController {
     {
         colorPicker.delegate = self
         loadCategories()
-        initializeDictionary() // beta code
+        initializeDictionary()
         tableView.register(UINib(nibName: "taskViewCell", bundle: nil), forCellReuseIdentifier: "taskCellToUse")
         tableView.backgroundColor = UIColor(named: "navBarColor")
         notificationCenter.removeAllDeliveredNotifications()

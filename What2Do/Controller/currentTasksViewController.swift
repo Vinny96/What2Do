@@ -205,6 +205,10 @@ class currentTasksViewController: UITableViewController {
                 }
             }
         }
+        /**
+         So what this method does is that it determines the number of items that each category should have. Now the way this method is done is that each index corresponds to the category in todayItems. The reason why this works is because we create the categoriesArray where its organized alphbetically by category name so when we create todayTasks the tasks are all matching todays date and are alphabetical. The items are also organized by alphabetical order of their parent category as well which is why this algorithm works. 
+         
+         */
     }
     
     private func fixPossibleDiscrepancies() // O(N*M) runtime. N for the number of elements in discrepancy Array and M for the number of elements that have to be pushed down the array due to an insert. 

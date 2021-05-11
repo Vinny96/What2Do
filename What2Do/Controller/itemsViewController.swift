@@ -240,4 +240,11 @@ class itemsViewController: UITableViewController {
     }
 }
 
+/**
+ Notes
+ 
+ One thing that we can do for future iterations is we can actually remove the categoryArray functionality. The reason why we can remove this functionality is because we have an optional category object that is always assigned a value. The reason why it is always assigned a value is se do this in the prepareForSegue method. So we can actually just use the optional category object rather than pass the whole array to the next viewController in which if the array is significantly large, this can have space implications. Also because we are passing in the category object we are going to use for the items view controller there is no need to pass in the whole array again since we can do all of our operations with that category object we are passing through. We can access the date using that category object and even add more items using that category object. 
+ 
+ 
+ */
 

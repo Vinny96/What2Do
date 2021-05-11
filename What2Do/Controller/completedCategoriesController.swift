@@ -128,3 +128,9 @@ class completedCategoriesController: UITableViewController {
 
 }
 
+/**
+ Notes
+ For the next update in the trashPressed function one thing that we can do is remove the tableView.ReloadData call at the end of every iteration loop in the while loop. This just addds unnecessary complexity and we can just have this when we exit the while loop. This is way more efficient in terms of time complexity. 
+ 
+ 
+ */
